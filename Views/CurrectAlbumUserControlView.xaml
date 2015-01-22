@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="RecordRemoteClientApp.Views.CurrectAlbumUserControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        
+        <Grid.Resources>
+            <Style TargetType="{x:Type ListViewItem}">
+                <EventSetter Event="MouseDoubleClick" Handler="ListViewDoubleClick"></EventSetter>
+
+                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItemLeftClick"></EventSetter>
+                <EventSetter Event="PreviewMouseMove" Handler="ListViewItemMouseMove"></EventSetter>
+                
+                <Setter Property="Tag" Value="{Binding}"></Setter>
+                <Setter Property="Background" Value="LightGray"/>
+                <Style.Triggers>
+                    <Trigger Property="ListView.AlternationIndex" Value="0">
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Trigger>
+                    <Trigger Property="ListView.AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="Gray"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
+            <Style TargetType="{x:Type GridViewColumnHeader}">
+                <EventSetter Event="MouseDown" Handler="OnMouseDown"/>
+            </Style>
+            
+        </Grid.Resources>
+        
+        <Label Content="No Album Detected" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+
+        <ListView ItemsSource="{Binding CurrentSongList}" AlternationCount="2" Visibility="{Binding IsCurrentAlbumVisible}">
+
+            <ListView.View>
+
+                <GridView AllowsColumnReorder="true">
+
+                    <GridViewColumn Header="Title" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Title,Mode=TwoWay}"
+									Background="Transparent"
+									BorderThickness="0"
+                                    LostFocus="TextBox_LostFocus"
+                                    Tag="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Artist" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Artist,Mode=TwoWay}"
+									Background="Transparent"
+									BorderThickness="0"
+                                    LostFocus="TextBox_LostFocus"
+                                    Tag="{Binding}">
+                                </TextBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Album" Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Album,Mode=TwoWay}"
+									Background="Transparent"
+									BorderThickness="0"
+                                    LostFocus="TextBox_LostFocus"
+                                    Tag="{Binding}">
+                                    <!--REMOVAL OF CONTEXT MENU-->
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu Visibility="Collapsed">
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+
+            </ListView.View>
+
+        </ListView>
+        
+    </Grid>
+</UserControl>
