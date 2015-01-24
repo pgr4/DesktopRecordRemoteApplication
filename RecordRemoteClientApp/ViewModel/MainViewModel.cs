@@ -4,6 +4,7 @@ using System.Data.SQLite;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Windows.Documents;
 using GalaSoft.MvvmLight;
@@ -202,6 +203,7 @@ namespace RecordRemoteClientApp.ViewModel
 
         private string default_albumart_location = @"C:\Users\pat\Desktop\vinyl-record.jpg";
         private byte[] default_albumart;
+        
 
         #region Private Functions
 
@@ -389,11 +391,10 @@ namespace RecordRemoteClientApp.ViewModel
 
         /// <summary>
         /// Send out an HTTP Request that will update the database on the webapi end
-        // TODO:IMPLEMENT
         /// </summary>
         public void RefreshWebApi()
         {
-          String loc = "http://192.168.1.247/api/update";
+          String loc = ThisIpAddress + "/api/update";
           var request = WebRequest.Create(loc);
           string text;
           var response = request.GetResponse();
@@ -411,6 +412,32 @@ namespace RecordRemoteClientApp.ViewModel
         public void AddToQueue(Song s)
         {
             QueueList.Add(s);
+        }
+
+        #endregion
+
+        #region Static Members
+
+        public static IPAddress ThisIpAddress;
+
+        /// <summary>
+        /// TODO:I am getting 2 valid IPs one that doesn't make any sense (.56.1)
+        /// </summary>
+        public static void SetIpAddress()
+        {
+            IPHostEntry host;
+            string localIP = "?";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+
+            ThisIpAddress = IPAddress.Parse(localIP);
         }
 
         #endregion

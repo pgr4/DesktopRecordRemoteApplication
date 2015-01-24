@@ -27,6 +27,7 @@ namespace RecordRemoteClientApp
         public MainWindow()
         {
             InitializeComponent();
+            MainViewModel.SetIpAddress();
         }
 
         private void ListBox_Drop(object sender, DragEventArgs e)
