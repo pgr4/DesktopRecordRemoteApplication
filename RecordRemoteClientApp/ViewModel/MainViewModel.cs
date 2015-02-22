@@ -33,6 +33,30 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Public Members
 
+        private string statusExtra;
+
+        public string StatusExtra
+        {
+            get { return statusExtra; }
+            set
+            {
+                statusExtra = value;
+                RaisePropertyChanged("StatusExtra");
+            }
+        }
+
+        private string status;
+
+        public string Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                RaisePropertyChanged("Status");
+            }
+        }
+
         private Table<tblAlbum> dbAlbums;
 
         public Table<tblAlbum> DbAlbums
@@ -154,6 +178,10 @@ namespace RecordRemoteClientApp.ViewModel
 
             DataListener = Listener.Instance;
             DataListener.NewAlbumEvent += DataListener_newAlbumEvent;
+            DataListener.SetStatus += DataListener_SetStatus;
+
+            status = "Unknown";
+            statusExtra = "Getting Status";
 
             StartDataListener();
 
@@ -203,7 +231,7 @@ namespace RecordRemoteClientApp.ViewModel
 
         private string default_albumart_location = @"C:\Users\pat\Desktop\vinyl-record.jpg";
         private byte[] default_albumart;
-        
+
 
         #region Private Functions
 
@@ -334,6 +362,12 @@ namespace RecordRemoteClientApp.ViewModel
 
         }
 
+        private void DataListener_SetStatus(string s, string e = null)
+        {
+            status = s;
+            statusExtra = e;
+        }
+
         #endregion
 
         #region Public Functions
@@ -394,19 +428,19 @@ namespace RecordRemoteClientApp.ViewModel
         /// </summary>
         public void RefreshWebApi()
         {
-          String loc = ThisIpAddress + "/api/update";
-          var request = WebRequest.Create(loc);
-          string text;
-          var response = request.GetResponse();
+            String loc = Listener.ThisIpAddress + "/api/update";
+            var request = WebRequest.Create(loc);
+            string text;
+            var response = request.GetResponse();
 
-          //Read to end seems slow ~1.5seconds
-          using (BufferedStream buffer = new BufferedStream(response.GetResponseStream()))
-          {
-            using (StreamReader reader = new StreamReader(buffer))
+            //Read to end seems slow ~1.5seconds
+            using (BufferedStream buffer = new BufferedStream(response.GetResponseStream()))
             {
-              text = reader.ReadToEnd();
+                using (StreamReader reader = new StreamReader(buffer))
+                {
+                    text = reader.ReadToEnd();
+                }
             }
-          }
         }
 
         public void AddToQueue(Song s)
@@ -416,30 +450,5 @@ namespace RecordRemoteClientApp.ViewModel
 
         #endregion
 
-        #region Static Members
-
-        public static IPAddress ThisIpAddress;
-
-        /// <summary>
-        /// TODO:I am getting 2 valid IPs one that doesn't make any sense (.56.1)
-        /// </summary>
-        public static void SetIpAddress()
-        {
-            IPHostEntry host;
-            string localIP = "?";
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    localIP = ip.ToString();
-                    break;
-                }
-            }
-
-            ThisIpAddress = IPAddress.Parse(localIP);
-        }
-
-        #endregion
     }
 }

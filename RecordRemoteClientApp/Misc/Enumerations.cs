@@ -11,7 +11,10 @@ namespace RecordRemoteClientApp.Enumerations
     {
         None = 0,
         NewAlbum,
-        CurrentAlbum
+        CurrentAlbum,
+        Status,
+        Busy = 20,
+        Ready = 21
     }
 
     public enum QueryType

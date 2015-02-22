@@ -29,6 +29,7 @@
             <!--Space-->
             <RowDefinition Height="Auto"></RowDefinition>
             <!--Remote-->
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -110,5 +111,27 @@
             <vws:SongDisplayUserControl></vws:SongDisplayUserControl>
         </Grid>
 
+        <Grid Grid.Row="5" Grid.ColumnSpan="7">
+            <StatusBar>
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem Grid.Column="0">
+                    <Label Name="lblStatus" Content="{Binding Status}"/>
+                </StatusBarItem>
+                <Separator Grid.Column="1" />
+                <StatusBarItem Grid.Column="2">
+                    <Label Name="lblExtra" Content="{Binding StatusExtra}"/>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
     </Grid>
 </Window>
