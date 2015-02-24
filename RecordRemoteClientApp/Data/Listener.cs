@@ -16,6 +16,10 @@ namespace RecordRemoteClientApp.Data
     {
         #region Members
 
+        public static BusyStatus? BusyStatus;
+
+        public static bool IsSystemBusy = false;
+
         public static IPAddress ThisIpAddress;
 
         private static Listener instance;
@@ -103,13 +107,16 @@ namespace RecordRemoteClientApp.Data
                             }
                             case MessageCommand.Status:
                             {
-                                //TODO:SEND UDP MESSAGE WHETHER WE ARE READY OR NOT
+                                SendStatus();
                                 break;
                             }
                             case  MessageCommand.Busy:
                             {
                                 if (SetStatus != null)
                                 {
+                                    byte bByte = MessageParser.GetByte(bytes, ref pointer);
+                                    BusyStatus = (BusyStatus)bByte;
+                                    IsSystemBusy = true;
                                     SetStatus("Busy");
                                 }
                                 break;
@@ -118,6 +125,8 @@ namespace RecordRemoteClientApp.Data
                             {
                                 if (SetStatus != null)
                                 {
+                                    IsSystemBusy = false;
+                                    BusyStatus = null;
                                     SetStatus("Ready");
                                 }
                                 break;
@@ -139,6 +148,60 @@ namespace RecordRemoteClientApp.Data
                 listener.Close();
             }
 
+        }
+
+        public void SendStatus()
+        {
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+
+            IPEndPoint ep = new IPEndPoint(broadcast, 30003);
+
+            //Sender IP
+            byte[] sourceIP = new byte[4];
+            sourceIP[0] = 192;
+            sourceIP[1] = 168;
+            sourceIP[2] = 1;
+            sourceIP[3] = 2;
+
+            //Destination IP
+            byte[] destinationIP = new byte[4];
+            destinationIP[0] = 192;
+            destinationIP[1] = 168;
+            destinationIP[2] = 1;
+            destinationIP[3] = 5;
+
+            //Command
+            byte command = (byte)(IsSystemBusy ? 20 : 21);
+
+            //Signal end of Header Info
+            byte[] cutoffSequence = new byte[6];
+            cutoffSequence[0] = 111;
+            cutoffSequence[1] = 111;
+            cutoffSequence[2] = 111;
+            cutoffSequence[3] = 111;
+            cutoffSequence[4] = 111;
+            cutoffSequence[5] = 111;
+            
+            int len = sourceIP.Length + destinationIP.Length + cutoffSequence.Length + 1;
+
+            if (IsSystemBusy)
+            {
+                len++;
+            }
+
+            byte[] SendArray = new byte[len];
+            sourceIP.CopyTo(SendArray, 0);
+            destinationIP.CopyTo(SendArray, 4);
+            SendArray[8] = command;
+            cutoffSequence.CopyTo(SendArray, 9);
+            if (IsSystemBusy)
+            {
+                SendArray[len - 1] = (byte)BusyStatus;
+            }
+
+            s.SendTo(SendArray, ep);
         }
 
         private byte[] GetStatusBytes()
