@@ -105,6 +105,7 @@
     <Compile Include="Converters\IndexConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Data\Listener.cs" />
+    <Compile Include="Data\Sender.cs" />
     <Compile Include="Misc\Enumerations.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\AssociationPicture.cs" />

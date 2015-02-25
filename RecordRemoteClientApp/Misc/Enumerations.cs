@@ -19,6 +19,8 @@ namespace RecordRemoteClientApp.Enumerations
 
     public enum BusyStatus
     {
+        [Description("The system is currently in an Unknown state.")]
+        Unknown,
         [Description("The system is currently in the Playing process.")]
         Play,
         [Description("The system is currently moving to desired track.")]
