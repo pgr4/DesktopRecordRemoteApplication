@@ -16,25 +16,21 @@ namespace RecordRemoteClientApp.Data
             int i = 0;
 
             //Sender IP
-            //byte[] sourceIP = new byte[4];
-            ret[i++] = 192;
-            ret[i++] = 168;
-            ret[i++] = 1;
-            ret[i++] = 2;
+            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[0];
+            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[1];
+            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[2];
+            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[3];
 
             //Destination IP
-            //byte[] destinationIP = new byte[4];
             ret[i++] = 192;
             ret[i++] = 168;
             ret[i++] = 1;
             ret[i++] = 5;
 
             //Command
-            //byte command = 0x10;
             ret[i++] = command;
 
             //Signal end of Header Info
-            //byte[] cutoffSequence = new byte[6];
             ret[i++] = 111;
             ret[i++] = 111;
             ret[i++] = 111;
@@ -145,7 +141,7 @@ namespace RecordRemoteClientApp.Data
 
                 header.CopyTo(message, 0);
 
-                message[header.Length] = (byte) Listener.BusyStatus;
+                message[header.Length] = (byte) Listener.BusyStatusType;
 
                 s.SendTo(message, ep);
             }

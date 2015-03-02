@@ -13,6 +13,8 @@ namespace RecordRemoteClientApp.Enumerations
         NewAlbum,
         CurrentAlbum,
         Status,
+        Scan,
+        Sync,
         Busy = 20,
         Ready = 21
     }

@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:vws="clr-namespace:RecordRemoteClientApp.Views"
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
-        Title="MainWindow" Height="500" Width="600" Closing="Window_Closing">
+        Title="MainWindow" WindowState="Maximized" Closing="Window_Closing">
 
     <Window.DataContext>
         <vm:MainViewModel></vm:MainViewModel>
@@ -67,7 +67,18 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="300"></RowDefinition>
             </Grid.RowDefinitions>
-
+            <Grid>
+                <StackPanel Orientation="Vertical">
+                    <Button>Scan</Button>
+                    <TextBlock HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}Status: {0}">
+                                <Binding Path="Status"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
             <Border Grid.Row="1" BorderThickness="2" BorderBrush="Black">
                 <Image Source="{Binding CurrentAlbum.Image}" Stretch="Fill"></Image>
             </Border>

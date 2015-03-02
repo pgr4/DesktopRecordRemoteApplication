@@ -16,7 +16,7 @@ namespace RecordRemoteClientApp.Data
     {
         #region Members
 
-        public static BusyStatus BusyStatus = BusyStatus.Unknown;
+        public static BusyStatus? BusyStatusType = BusyStatus.Unknown;
 
         public static bool IsSystemBusy = true;
 
@@ -61,7 +61,6 @@ namespace RecordRemoteClientApp.Data
 
             UdpClient listener = new UdpClient(listenPort);
             IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
-            IPEndPoint sendPoint = new IPEndPoint(IPAddress.Broadcast, listenPort);
 
             Sender.SendStatusMessage();
 
@@ -106,21 +105,28 @@ namespace RecordRemoteClientApp.Data
                             }
                             case MessageCommand.Status:
                             {
-                                if (IsSystemBusy = true)
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    if (BusyStatus == BusyStatus.Unknown)
+                                    if (IsSystemBusy)
                                     {
-                                        Sender.SendBusyMessage();
+                                        if (BusyStatusType == BusyStatus.Unknown)
+                                        {
+                                            Sender.SendBusyMessage();
+                                        }
+                                        else
+                                        {
+                                            Sender.SendReadyMessage();
+                                        }
                                     }
                                     else
                                     {
-                                        Sender.SendReadyMessage();
+                                        Sender.SendBusyMessage();
                                     }
                                 }
-                                else
-                                {
-                                    Sender.SendBusyMessage();
-                                }
+                                break;
+                            }
+                            case MessageCommand.Sync:
+                            {
                                 break;
                             }
                             case  MessageCommand.Busy:
@@ -128,11 +134,11 @@ namespace RecordRemoteClientApp.Data
                                 if (SetStatus != null)
                                 {
                                     byte bByte = MessageParser.GetByte(bytes, ref pointer);
-                                    BusyStatus = (BusyStatus)bByte;
-                                    if(BusyStatus == BusyStatus.Unknown)
+                                    BusyStatusType = (BusyStatus)bByte;
+                                    if (BusyStatusType == BusyStatus.Unknown)
                                     {
                                         IsSystemBusy = false;
-                                        SetStatus("Unknown",BusyStatus.ToString());
+                                        SetStatus("Unknown", BusyStatusType.ToString());
                                     }
                                     else
                                     {
@@ -147,7 +153,7 @@ namespace RecordRemoteClientApp.Data
                                 if (SetStatus != null)
                                 {
                                     IsSystemBusy = false;
-                                    BusyStatus = null;
+                                    BusyStatusType = null;
                                     SetStatus("Ready");
                                 }
                                 break;

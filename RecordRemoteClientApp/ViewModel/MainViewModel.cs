@@ -364,8 +364,8 @@ namespace RecordRemoteClientApp.ViewModel
 
         private void DataListener_SetStatus(string s, string e = null)
         {
-            status = s;
-            statusExtra = e;
+            Status = s;
+            StatusExtra = e;
         }
 
         #endregion
