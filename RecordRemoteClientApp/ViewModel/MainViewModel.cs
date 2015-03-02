@@ -18,6 +18,7 @@ using System.Data.Linq;
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.Data;
 using RecordRemoteClientApp.Views;
+using RecordRemoteClientApp.Enumerations;
 
 namespace RecordRemoteClientApp.ViewModel
 {
@@ -32,18 +33,6 @@ namespace RecordRemoteClientApp.ViewModel
         #endregion
 
         #region Public Members
-
-        private string statusExtra;
-
-        public string StatusExtra
-        {
-            get { return statusExtra; }
-            set
-            {
-                statusExtra = value;
-                RaisePropertyChanged("StatusExtra");
-            }
-        }
 
         private string status;
 
@@ -181,8 +170,7 @@ namespace RecordRemoteClientApp.ViewModel
             DataListener.SetStatus += DataListener_SetStatus;
             DataListener.SyncMessage += DataListener_SyncMessage;
 
-            status = "Unknown";
-            statusExtra = "Getting Status";
+            status = BusyStatus.Unknown.ToString();
 
             StartDataListener();
 
@@ -298,6 +286,10 @@ namespace RecordRemoteClientApp.ViewModel
             t.Start();
         }
 
+        #endregion
+
+        #region Event Functions
+
         /// <summary>
         /// Add na information to database
         /// Show the newAlbum information in the current song list
@@ -386,10 +378,9 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        private void DataListener_SetStatus(string s, string e = null)
+        private void DataListener_SetStatus(BusyStatus bs)
         {
-            Status = s;
-            StatusExtra = e;
+            Status = bs.ToDescriptionString();
         }
 
         #endregion

@@ -16,9 +16,7 @@ namespace RecordRemoteClientApp.Data
     {
         #region Members
 
-        public static BusyStatus? BusyStatusType = BusyStatus.Unknown;
-
-        public static bool IsSystemBusy = true;
+        public static BusyStatus BusyStatusType = BusyStatus.Unknown;
 
         public static IPAddress ThisIpAddress;
 
@@ -51,7 +49,7 @@ namespace RecordRemoteClientApp.Data
         public delegate void SyncMessageDetected(byte[] key);
         public event SyncMessageDetected SyncMessage;
 
-        public delegate void StatusEvent(string status, string extra = null);
+        public delegate void StatusEvent(BusyStatus bs);
         public event StatusEvent SetStatus;
 
         #endregion
@@ -82,11 +80,8 @@ namespace RecordRemoteClientApp.Data
                         switch (mh.Command)
                         {
                             case MessageCommand.None:
-                            {
                                 break;
-                            }
                             case MessageCommand.NewAlbum:
-                            {
                                 if (!mh.DestinationAddress.Equals(ThisIpAddress))
                                 {
                                     NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
@@ -97,42 +92,23 @@ namespace RecordRemoteClientApp.Data
                                     }
                                 }
                                 break;
-                            }
                             case MessageCommand.CurrentAlbum:
-                            {
                                 //Todo: Change to use CurrentAlbum methods and members later
-                                NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
+                                NewAlbum na1 = MessageParser.ParseNewAlbum(bytes, ref pointer);
 
                                 if (NewCurrentAlbum != null)
                                 {
-                                    NewCurrentAlbum(na);
+                                    NewCurrentAlbum(na1);
                                 }
                                 break;
-                            }
                             case MessageCommand.Status:
-                            {
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    if (IsSystemBusy)
-                                    {
-                                        if (BusyStatusType == BusyStatus.Unknown)
-                                        {
-                                            Sender.SendBusyMessage();
-                                        }
-                                        else
-                                        {
-                                            Sender.SendReadyMessage();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Sender.SendBusyMessage();
-                                    }
+                                    Sender.SendStatusMessage(BusyStatusType);
                                 }
                                 break;
-                            }
                             case MessageCommand.Sync:
-                            {
+
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
                                     byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
@@ -140,38 +116,17 @@ namespace RecordRemoteClientApp.Data
                                     {
                                         SyncMessage(bKey);
                                     }
-                                    break;
-                                }
-                            }
-                            case  MessageCommand.Busy:
-                            {
-                                if (SetStatus != null)
-                                {
-                                    byte bByte = MessageParser.GetByte(bytes, ref pointer);
-                                    BusyStatusType = (BusyStatus)bByte;
-                                    if (BusyStatusType == BusyStatus.Unknown)
-                                    {
-                                        IsSystemBusy = false;
-                                        SetStatus("Unknown", BusyStatusType.ToString());
-                                    }
-                                    else
-                                    {
-                                        IsSystemBusy = true;
-                                        SetStatus("Ready");
-                                    }
                                 }
                                 break;
-                            }
-                            case MessageCommand.Ready:
-                            {
+                            case MessageCommand.Scan:
+                                break;
+                            default:
                                 if (SetStatus != null)
                                 {
-                                    IsSystemBusy = false;
-                                    BusyStatusType = null;
-                                    SetStatus("Ready");
+                                    SetStatus((BusyStatus)mh.Command);
+                                    BusyStatusType = (BusyStatus)mh.Command;
                                 }
                                 break;
-                            }
                         }
                     }
                     else

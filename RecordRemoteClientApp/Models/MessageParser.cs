@@ -97,11 +97,23 @@ namespace RecordRemoteClientApp.Models
 
         public static byte[] ParseKey(byte[] bytes, ref int pointer)
         {
-            List<byte> lst = new List<byte>();
-            while (pointer < bytes.Length)
+            int endingPoint = 0;
+            for (int i = pointer; i < bytes.Length; i++)
             {
-                    lst.Add(bytes[pointer]);
+                if (bytes[i] == 111 && bytes[i + 1] == 111 && bytes[i + 2] == 111 &&
+                    bytes[i + 3] == 111 && bytes[i + 4] == 111 && bytes[i + 5] == 111)
+                {
+                    endingPoint = i - pointer;
+                }
             }
+
+            byte[] ret = new byte[endingPoint];
+            for (int i = 0; i < endingPoint; i++)
+            {
+                ret[i] = bytes[pointer++];
+            }
+
+            return ret;
         }
     }
 }

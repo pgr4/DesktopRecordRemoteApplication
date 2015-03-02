@@ -15,22 +15,33 @@ namespace RecordRemoteClientApp.Enumerations
         Status,
         Scan,
         Sync,
-        Busy = 20,
-        Ready = 21
-    }
+        Unknown = 20,
+        Ready = 21,
+        Play = 22,
+        GoToTrack = 23,
+        Pause = 24,
+        Stop = 25,
+        sScan = 26
 
+       
+    }
+     
     public enum BusyStatus
     {
-        [Description("The system is currently in an Unknown state.")]
-        Unknown,
-        [Description("The system is currently in the Playing process.")]
-        Play,
-        [Description("The system is currently moving to desired track.")]
-        GoToTrack,
-        [Description("The system is currently in the Pausing process.")]
-        Pause,
-        [Description("The system is currently in the Stopping process.")]
-        Stop
+        [Description("Unknown")]
+        Unknown = 20,
+        [Description("Ready")]
+        Ready = 21,
+        [Description("Playing")]
+        Play = 22,
+        [Description("Moving")]
+        GoToTrack = 23,
+        [Description("Pausing")]
+        Pause = 24,
+        [Description("Stopping")]
+        Stop = 25,
+        [Description("Scanning")]
+        sScan = 26
     }
 
     public enum QueryType
@@ -46,6 +57,11 @@ namespace RecordRemoteClientApp.Enumerations
     public static class MyEnumExtensions
     {
         public static string ToDescriptionString(this QueryType val)
+        {
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])val.GetType().GetField(val.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), false);
+            return attributes.Length > 0 ? attributes[0].Description : string.Empty;
+        }
+        public static string ToDescriptionString(this BusyStatus val)
         {
             DescriptionAttribute[] attributes = (DescriptionAttribute[])val.GetType().GetField(val.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : string.Empty;

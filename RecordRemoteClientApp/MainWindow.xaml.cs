@@ -1,4 +1,5 @@
-﻿using RecordRemoteClientApp.Models;
+﻿using RecordRemoteClientApp.Data;
+using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,11 @@ namespace RecordRemoteClientApp
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void btnScan_Click(object sender, RoutedEventArgs e)
+        {
+            Sender.SendScanMessage();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -69,7 +69,7 @@
             </Grid.RowDefinitions>
             <Grid>
                 <StackPanel Orientation="Vertical">
-                    <Button>Scan</Button>
+                    <Button Name="btnScan" Click="btnScan_Click">Scan</Button>
                     <TextBlock HorizontalAlignment="Center">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}Status: {0}">
@@ -139,9 +139,6 @@
                     <Label Name="lblStatus" Content="{Binding Status}"/>
                 </StatusBarItem>
                 <Separator Grid.Column="1" />
-                <StatusBarItem Grid.Column="2">
-                    <Label Name="lblExtra" Content="{Binding StatusExtra}"/>
-                </StatusBarItem>
             </StatusBar>
         </Grid>
     </Grid>
