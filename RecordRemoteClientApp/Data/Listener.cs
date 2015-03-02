@@ -87,7 +87,7 @@ namespace RecordRemoteClientApp.Data
                             }
                             case MessageCommand.NewAlbum:
                             {
-                                if (!mh.SourceAddress.Equals(ThisIpAddress))
+                                if (!mh.DestinationAddress.Equals(ThisIpAddress))
                                 {
                                     NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
 
