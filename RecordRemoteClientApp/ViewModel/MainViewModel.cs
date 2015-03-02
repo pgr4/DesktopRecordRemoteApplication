@@ -179,19 +179,20 @@ namespace RecordRemoteClientApp.ViewModel
             DataListener = Listener.Instance;
             DataListener.NewAlbumEvent += DataListener_newAlbumEvent;
             DataListener.SetStatus += DataListener_SetStatus;
+            DataListener.SyncMessage += DataListener_SyncMessage;
 
             status = "Unknown";
             statusExtra = "Getting Status";
 
             StartDataListener();
 
-            if (!File.Exists("Master.sqlite"))
+            if (!File.Exists(@"C:\RecordWebApi\Master.sqlite"))
             {
                 //CREATING DB
-                db = new SQLiteConnection("Master.db");
+                db = new SQLiteConnection(@"C:\RecordWebApi\Master.db");
 
                 //CONNECTING
-                dbConnection = new SQLiteConnection("Data Source=Master.sqlite;Version=3;");
+                dbConnection = new SQLiteConnection(@"Data Source=C:\RecordWebApi\Master.sqlite;Version=3;");
                 dbConnection.Open();
 
                 string sql;
@@ -208,10 +209,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
             else
             {
-                db = new SQLiteConnection("Master.db");
+                db = new SQLiteConnection(@"C:\RecordWebApi\Master.db");
 
                 //CONNECTING
-                dbConnection = new SQLiteConnection("Data Source=Master.sqlite;Version=3;");
+                dbConnection = new SQLiteConnection(@"Data Source=C:\RecordWebApi\Master.sqlite;Version=3;");
                 dbConnection.Open();
             }
 
@@ -356,10 +357,33 @@ namespace RecordRemoteClientApp.ViewModel
                         RefreshSongList();
 
                         RefreshWebApi();
+
+                        Sender.SendSyncMessage(na.Key);
                     }
                 };
             });
+        }
 
+        private void DataListener_SyncMessage(byte[] key)
+        {
+            RefreshCurrentSongList(key);
+            RefreshSongList();
+            foreach (var a in DbAlbums)
+            {
+                if (a.Key.SequenceEqual(key))
+                {
+                    CurrentAlbum = new Album(a);
+
+                    //Clear Queue List
+                    QueueList.Clear();
+                    RaisePropertyChanged("QueueList");
+                    //Clear Current Song
+                    CurrentSong = null;
+                    RaisePropertyChanged("CurrentSong");
+                    //Update the Current Song List
+                    RaisePropertyChanged("CurrentSongList");
+                }
+            }
         }
 
         private void DataListener_SetStatus(string s, string e = null)

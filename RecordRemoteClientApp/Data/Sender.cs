@@ -170,5 +170,35 @@ namespace RecordRemoteClientApp.Data
 
             }
         }
+
+        public static void SendSyncMessage(byte[] b)
+        {
+            try
+            {
+                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+
+                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
+
+                byte[] header = GetHeader(5);
+
+                byte[] message = new byte[header.Length + b.Length + 6];
+
+                header.CopyTo(message, 0);
+                b.CopyTo(message, header.Length);
+
+                for (int i = header.Length + b.Length; i < message.Length; i++)
+                {
+                    message[i] = 111;
+                }
+                    
+                s.SendTo(message, ep);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }

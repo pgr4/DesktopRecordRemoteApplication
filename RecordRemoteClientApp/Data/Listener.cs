@@ -48,6 +48,9 @@ namespace RecordRemoteClientApp.Data
         public delegate void NewCurrentAlbumDetected(NewAlbum na);
         public event NewCurrentAlbumDetected NewCurrentAlbum;
 
+        public delegate void SyncMessageDetected(byte[] key);
+        public event SyncMessageDetected SyncMessage;
+
         public delegate void StatusEvent(string status, string extra = null);
         public event StatusEvent SetStatus;
 
@@ -84,11 +87,14 @@ namespace RecordRemoteClientApp.Data
                             }
                             case MessageCommand.NewAlbum:
                             {
-                                NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
-
-                                if (NewAlbumEvent != null)
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    NewAlbumEvent(na);
+                                    NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
+
+                                    if (NewAlbumEvent != null)
+                                    {
+                                        NewAlbumEvent(na);
+                                    }
                                 }
                                 break;
                             }
@@ -127,7 +133,15 @@ namespace RecordRemoteClientApp.Data
                             }
                             case MessageCommand.Sync:
                             {
-                                break;
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
+                                {
+                                    byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
+                                    if (SyncMessage != null)
+                                    {
+                                        SyncMessage(bKey);
+                                    }
+                                    break;
+                                }
                             }
                             case  MessageCommand.Busy:
                             {

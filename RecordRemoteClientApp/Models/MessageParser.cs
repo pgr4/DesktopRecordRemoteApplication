@@ -94,5 +94,14 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+
+        public static byte[] ParseKey(byte[] bytes, ref int pointer)
+        {
+            List<byte> lst = new List<byte>();
+            while (pointer < bytes.Length)
+            {
+                    lst.Add(bytes[pointer]);
+            }
+        }
     }
 }
