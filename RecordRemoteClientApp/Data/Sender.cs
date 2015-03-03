@@ -1,11 +1,7 @@
 ﻿using RecordRemoteClientApp.Enumerations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordRemoteClientApp.Data
 {
@@ -16,11 +12,13 @@ namespace RecordRemoteClientApp.Data
             byte[] ret = new byte[15];
             int i = 0;
 
+            byte[] ip = Listener.ThisIpAddress.GetAddressBytes();
+
             //Sender IP
-            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[0];
-            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[1];
-            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[2];
-            ret[i++] = Listener.ThisIpAddress.GetAddressBytes()[3];
+            ret[i++] = ip[0];
+            ret[i++] = ip[1];
+            ret[i++] = ip[2];
+            ret[i++] = ip[3];
 
             //Destination IP
             ret[i++] = 192;
@@ -79,46 +77,6 @@ namespace RecordRemoteClientApp.Data
                 message[header.Length] = b;
 
                 s.SendTo(message, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        public static void SendStopMessage()
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader((byte)13);
-
-                s.SendTo(header, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        public static void SendReadyMessage()
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader((byte)21);
-
-                s.SendTo(header, ep);
             }
             catch (Exception e)
             {
@@ -208,7 +166,7 @@ namespace RecordRemoteClientApp.Data
                     message[i] = 111;
                 }
                     
-                s.SendTo(message, ep);
+               s.SendTo(message, ep);
             }
             catch (Exception e)
             {

@@ -318,6 +318,8 @@ namespace RecordRemoteClientApp.ViewModel
                         RaisePropertyChanged("CurrentSongList");
                     });
 
+                    Sender.SendSyncMessage(na.Key);
+
                     return;
                 }
             }
@@ -443,7 +445,7 @@ namespace RecordRemoteClientApp.ViewModel
         /// </summary>
         public void RefreshWebApi()
         {
-            String loc = Listener.ThisIpAddress + "/api/update";
+            var loc = new Uri("http://" + Listener.ThisIpAddress + @"/api/update");
             var request = WebRequest.Create(loc);
             string text;
             var response = request.GetResponse();

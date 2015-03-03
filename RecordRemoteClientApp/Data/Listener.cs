@@ -82,7 +82,7 @@ namespace RecordRemoteClientApp.Data
                             case MessageCommand.None:
                                 break;
                             case MessageCommand.NewAlbum:
-                                if (!mh.DestinationAddress.Equals(ThisIpAddress))
+                                if (mh.DestinationAddress.Equals(ThisIpAddress))
                                 {
                                     NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
 

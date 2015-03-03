@@ -32,10 +32,8 @@ namespace RecordRemoteClientApp.Models
         public static NewAlbum ParseNewAlbum(byte[] b, ref int pointer)
         {
             NewAlbum na = new NewAlbum();
-            na.Key = new Byte[2];
-            na.Key[0] = GetByte(b, ref pointer);
-            na.Key[1] = GetByte(b, ref pointer);
-            na.Breaks = GetInt(b, ref pointer);
+            na.Key = ParseKey(b, ref pointer);
+            na.Breaks = na.Key.Length;
             return na;
         }
 
@@ -104,6 +102,7 @@ namespace RecordRemoteClientApp.Models
                     bytes[i + 3] == 111 && bytes[i + 4] == 111 && bytes[i + 5] == 111)
                 {
                     endingPoint = i - pointer;
+                    break;
                 }
             }
 
