@@ -229,6 +229,7 @@ namespace RecordRemoteClientApp.Views
                 }
             }
             DragLabel.Visibility = Visibility.Collapsed;
+            vm.ShowAlbumHint = Visibility.Collapsed;
         }
 
         private void AlbumTrackAssociationView_OnDragOver(object sender, DragEventArgs e)

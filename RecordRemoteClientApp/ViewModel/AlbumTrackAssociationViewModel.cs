@@ -22,6 +22,19 @@ namespace RecordRemoteClientApp.ViewModel
     {
         #region Members
 
+        private Visibility showAlbumHint;
+
+        public Visibility ShowAlbumHint
+        {
+            get { return showAlbumHint; }
+            set
+            {
+                showAlbumHint = value;
+                RaisePropertyChanged("ShowAlbumHint");
+            }
+        }
+        
+
         public string AlbumName { get; set; }
         public string ArtistName { get; set; }
 
@@ -121,6 +134,8 @@ namespace RecordRemoteClientApp.ViewModel
             {
                 SongList.Add(new SongAndNumber() { Name = string.Empty, Number = (i + 1).ToString() });
             }
+
+            ShowAlbumHint = Visibility.Visible;
 
             RaisePropAll();
         }

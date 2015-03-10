@@ -55,7 +55,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="5"/>
@@ -63,26 +63,30 @@
 
         <Grid Grid.Row="0">
             <ListBox x:Name="songListBox" ItemsSource="{Binding SongList, Mode=TwoWay}" SelectedItem="{Binding SelectedSongAndNumber, Mode=TwoWay}" SelectionChanged="songListBox_SelectionChanged" Tag="{Binding OperationState, Mode=TwoWay}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="40"/>
                                 <ColumnDefinition/>
-                                <ColumnDefinition Width="5"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="5"/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="5"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="5"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="1" Width="200" Height="40" Content="{Binding Number, Mode=TwoWay}"/>
+                            <Label Grid.Column="1" Content="{Binding Number, Mode=TwoWay}"/>
 
-                            <TextBox Grid.Column="3" Width="200" Height="40" Text="{Binding Name, Mode=TwoWay}"/>
+                            <TextBox Grid.Column="2" VerticalContentAlignment="Center" Text="{Binding Name, Mode=TwoWay}"/>
 
-                            <Button Grid.Column="5" x:Name="btnMerge" Click="btnMerge_Click" Content="{Binding Tag, Converter={StaticResource ButtonConverter}, ElementName=songListBox}" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">
+                            <Button Grid.Column="4" x:Name="btnMerge" Click="btnMerge_Click" Content="{Binding Tag, Converter={StaticResource ButtonConverter}, ElementName=songListBox}" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">
                                 <Button.Visibility>
                                     <MultiBinding Converter="{StaticResource B2V}">
                                         <Binding Path="Number"/>
@@ -91,7 +95,7 @@
                                 </Button.Visibility>
                             </Button>
 
-                            <Button Grid.Column="7" x:Name="btnDelete" Click="btnDelete_Click" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">Delete
+                            <Button Grid.Column="6" x:Name="btnDelete" Click="btnDelete_Click" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">Delete
                                 <Button.Visibility>
                                     <MultiBinding Converter="{StaticResource B2V}">
                                         <Binding Path="Number"/>
@@ -105,7 +109,8 @@
             </ListBox>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" MaxHeight="200">
+            <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" Opacity="50" Visibility="{Binding ShowAlbumHint}">Drag and Drop Album Art</Label>
             <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding AlbumArtList}">
                     <ItemsControl.ItemsPanel>
@@ -139,9 +144,13 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
+                
                 <Label Margin="0,5,0,5" Content="Artist" Grid.Column="0"/>
-                <TextBox x:Name="txtArtist" Margin="0,5,0,5" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" TextChanged="ArtistTextBox_TextChanged" Style="{DynamicResource tbListStyleArtist}"/>
+                
+                <TextBox x:Name="txtArtist" Margin="0,5,0,5" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" TextChanged="ArtistTextBox_TextChanged" Style="{DynamicResource tbListStyleArtist}"/>
+              
                 <Image Grid.Column="3" Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding ArtistBusyVisibility}"/>
+                
             </Grid>
             <Grid Grid.Column="3">
                 <Grid.ColumnDefinitions>
@@ -150,9 +159,13 @@
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="20"/>
                 </Grid.ColumnDefinitions>
+                
                 <Label Margin="0,5,0,5" Content="Album" Grid.Column="0"/>
-                <TextBox x:Name="txtAlbum" Margin="0,5,0,5" Text="{Binding AlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" TextChanged="AlbumTextBox_TextChanged" Style="{DynamicResource tbListStyleAlbum}"/>
+
+                <TextBox x:Name="txtAlbum" VerticalContentAlignment="Center" Margin="0,5,0,5" Text="{Binding AlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" TextChanged="AlbumTextBox_TextChanged" Style="{DynamicResource tbListStyleAlbum}"/>
+                
                 <Image Grid.Column="3" Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding AlbumBusyVisibility}"/>
+                
             </Grid>
         </Grid>
 

@@ -6,16 +6,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        
+
         <Grid.Resources>
             <Style TargetType="{x:Type ListViewItem}">
                 <EventSetter Event="MouseDoubleClick" Handler="ListViewDoubleClick"></EventSetter>
 
                 <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItemLeftClick"></EventSetter>
                 <EventSetter Event="PreviewMouseMove" Handler="ListViewItemMouseMove"></EventSetter>
-                
+
                 <Setter Property="Tag" Value="{Binding}"></Setter>
                 <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Height" Value="50"></Setter>
+                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                <Setter Property="FontSize" Value="24"></Setter>
                 <Style.Triggers>
                     <Trigger Property="ListView.AlternationIndex" Value="0">
                         <Setter Property="Background" Value="Transparent"/>
@@ -25,13 +28,13 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
+
             <Style TargetType="{x:Type GridViewColumnHeader}">
                 <EventSetter Event="MouseDown" Handler="OnMouseDown"/>
             </Style>
-            
+
         </Grid.Resources>
-        
+
         <Label Content="No Album Detected" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
 
         <ListView ItemsSource="{Binding CurrentSongList}" AlternationCount="2" Visibility="{Binding IsCurrentAlbumVisible}">
@@ -40,7 +43,7 @@
 
                 <GridView AllowsColumnReorder="true">
 
-                    <GridViewColumn Header="Title" Width="100">
+                    <GridViewColumn Header="Title" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Title,Mode=TwoWay}"
@@ -52,7 +55,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Artist" Width="100">
+                    <GridViewColumn Header="Artist" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Artist,Mode=TwoWay}"
@@ -65,7 +68,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Album" Width="100">
+                    <GridViewColumn Header="Album" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Album,Mode=TwoWay}"
@@ -89,6 +92,6 @@
             </ListView.View>
 
         </ListView>
-        
+
     </Grid>
 </UserControl>

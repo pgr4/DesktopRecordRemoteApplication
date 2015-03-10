@@ -15,7 +15,14 @@ namespace RecordRemoteClientApp.Enumerations
         Status,
         Scan,
         Sync,
-        Power,
+        GetPower,
+        SwitchPowerOn,
+        SwitchPowerOff,
+
+        PowerUnknown = 14,
+        On = 15,
+        Off = 16,
+       
         Unknown = 20,
         Ready = 21,
         Play = 22,

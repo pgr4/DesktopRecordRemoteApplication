@@ -13,16 +13,14 @@ namespace RecordRemoteClientApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch (value as PowerStatus)
+            switch (value as PowerStatus?)
             { 
                 case PowerStatus.On:
-                    return PowerStatus.Off.ToString();
-                    break;
+                    return "Switch " + PowerStatus.Off;
                 case PowerStatus.Off:
-                    return PowerStatus.On.ToString();
-                    break;
+                    return "Switch " + PowerStatus.On;
                 default:
-                    return "Unknown";
+                    return PowerStatus.Unknown;
             }
         }
 

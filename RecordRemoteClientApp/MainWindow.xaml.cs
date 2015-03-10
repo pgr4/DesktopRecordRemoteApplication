@@ -1,22 +1,8 @@
 ﻿using RecordRemoteClientApp.Data;
+using RecordRemoteClientApp.Enumerations;
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RecordRemoteClientApp
 {
@@ -69,7 +55,15 @@ namespace RecordRemoteClientApp
 
         private void btnPower_Click(object sender, RoutedEventArgs e)
         {
-            Sender.SendGenericMessage();
+            var mv = DataContext as MainViewModel;
+            if (mv.PowerType == PowerStatus.Off || mv.PowerType == PowerStatus.Unknown)
+            {
+                Sender.SendGenericMessage(MessageCommand.SwitchPowerOff);
+            }
+            else
+            {
+                Sender.SendGenericMessage(MessageCommand.SwitchPowerOn);
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

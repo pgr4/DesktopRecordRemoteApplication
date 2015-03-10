@@ -12,6 +12,8 @@
             <Style TargetType="{x:Type ListViewItem}">
                 <EventSetter Event="MouseDoubleClick" Handler="ListViewDoubleClick"></EventSetter>
                 <Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Height" Value="35"></Setter>
+                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
                 <Style.Triggers>
                     <Trigger Property="ListView.AlternationIndex" Value="0">
                         <Setter Property="Background" Value="Transparent"/>
@@ -35,7 +37,7 @@
 
                 <GridView AllowsColumnReorder="true">
 
-                    <GridViewColumn Header="Title" Width="100">
+                    <GridViewColumn Header="Title" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Title,Mode=TwoWay}"
@@ -47,7 +49,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Artist" Width="100">
+                    <GridViewColumn Header="Artist" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Artist,Mode=TwoWay}"
@@ -60,7 +62,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Album" Width="100">
+                    <GridViewColumn Header="Album" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBox Text="{Binding Album,Mode=TwoWay}"

@@ -33,9 +33,9 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Content="{Binding CurrentAlbum.Name}"></Label>
-                <Label Grid.Row="1" Content="{Binding CurrentAlbum.Artist}"></Label>
-                <Label Grid.Row="2" Content="{Binding CurrentSong.Title}"></Label>
+                <Label Grid.Row="0" FontSize="15" FontWeight="Bold" Content="{Binding CurrentAlbum.Name}"></Label>
+                <Label Grid.Row="1" FontSize="15" Content="{Binding CurrentAlbum.Artist}"></Label>
+                <Label Grid.Row="2" FontSize="15" Content="{Binding CurrentSong.Title}"></Label>
 
             </Grid>
             

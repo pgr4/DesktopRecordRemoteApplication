@@ -96,7 +96,7 @@ namespace RecordRemoteClientApp.Data
                                 }
                                 break;
                             case MessageCommand.CurrentAlbum:
-                                //Todo: Change to use CurrentAlbum methods and members later
+                                //Todo: THIS IS TEST
                                 NewAlbum na1 = MessageParser.ParseNewAlbum(bytes, ref pointer);
 
                                 if (NewCurrentAlbum != null)
@@ -121,28 +121,33 @@ namespace RecordRemoteClientApp.Data
                                 }
                                 break;
                             case MessageCommand.Scan:
+                                //Ignore
                                 break;
-                            case MessageCommand.Power:
+                            case MessageCommand.GetPower:
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
-                                    if (SyncMessage != null)
-                                    {
-                                        SyncMessage(bKey);
-                                    }
+                                    Sender.SendGenericMessage((MessageCommand)PowerStatusType + 14);
                                 }
-                                else
+                                break;
+                            case MessageCommand.SwitchPowerOn:
+                            case MessageCommand.SwitchPowerOff:
+                                //Ignore
+                                break;
+                            case MessageCommand.On:
+                            case MessageCommand.Off:
+                            case MessageCommand.PowerUnknown:
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
                                     if (SetPowerStatus != null)
                                     {
-                                        PowerStatus ps = ((PowerStatus)MessageParser.GetByte(bytes, ref pointer));
+                                        PowerStatus ps = (PowerStatus)mh.Command - 14;
                                         PowerStatusType = ps;
                                         SetPowerStatus(ps);
                                     }
                                 }
                                 break;
                             default:
-                                //TODO:MAKE SURE ITS A BUSY MESSAGE!!!ie remove from default
+                                //TODO: MAKE SURE ALL COMMANDS ARE BUSY IF LEFT DEFAULT
                                 if (SetBusyStatus != null)
                                 {
                                     SetBusyStatus((BusyStatus)mh.Command);
@@ -150,10 +155,6 @@ namespace RecordRemoteClientApp.Data
                                 }
                                 break;
                         }
-                    }
-                    else
-                    {
-                        //Message was not parsed correctly
                     }
                 }
             }

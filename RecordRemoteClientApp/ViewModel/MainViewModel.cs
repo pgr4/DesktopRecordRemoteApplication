@@ -37,6 +37,19 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Public Members
 
+        private bool powerEnable;
+
+        public bool PowerEnable
+        {
+            get { return powerEnable; }
+            set
+            {
+                powerEnable = value;
+                RaisePropertyChanged("PowerEnable");
+            }
+        }
+
+
         private BusyStatus busyType;
 
         public BusyStatus BusyType
@@ -57,6 +70,18 @@ namespace RecordRemoteClientApp.ViewModel
             set
             {
                 powerType = value;
+                switch (value)
+                {
+                    case PowerStatus.On:
+                        PowerEnable = true;
+                        break;
+                    case PowerStatus.Off:
+                        PowerEnable = true;
+                        break;
+                    case PowerStatus.Unknown:
+                        PowerEnable = false;
+                        break;
+                }
                 RaisePropertyChanged("PowerType");
             }
         }
@@ -215,6 +240,7 @@ namespace RecordRemoteClientApp.ViewModel
             BusyType = BusyStatus.Unknown;
             BStatus = BusyStatus.Unknown.ToString();
             PStatus = PowerStatus.Unknown.ToString();
+            PowerEnable = false;
 
             StartDataListener();
 
@@ -225,7 +251,7 @@ namespace RecordRemoteClientApp.ViewModel
             GetDefaultAlbumArt();
 
             Sender.SendGenericMessage(MessageCommand.Status);
-            Sender.SendGenericMessage(MessageCommand.Power);
+            Sender.SendGenericMessage(MessageCommand.GetPower);
         }
 
         #endregion
