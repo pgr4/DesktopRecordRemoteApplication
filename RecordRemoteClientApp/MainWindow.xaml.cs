@@ -67,6 +67,11 @@ namespace RecordRemoteClientApp
             Sender.SendScanMessage();
         }
 
+        private void btnPower_Click(object sender, RoutedEventArgs e)
+        {
+            Sender.SendGenericMessage();
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Application.Current.Shutdown();

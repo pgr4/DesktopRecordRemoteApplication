@@ -15,6 +15,7 @@ namespace RecordRemoteClientApp.Enumerations
         Status,
         Scan,
         Sync,
+        Power,
         Unknown = 20,
         Ready = 21,
         Play = 22,
@@ -23,9 +24,16 @@ namespace RecordRemoteClientApp.Enumerations
         Stop = 25,
         sScan = 26
 
-       
+
     }
-     
+
+    public enum PowerStatus
+    {
+        Unknown,
+        On,
+        Off
+    }
+
     public enum BusyStatus
     {
         [Description("Unknown")]

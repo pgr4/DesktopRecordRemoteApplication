@@ -18,7 +18,11 @@ namespace RecordRemoteClientApp.Data
 
         public static BusyStatus BusyStatusType = BusyStatus.Unknown;
 
+        public static PowerStatus PowerStatusType = PowerStatus.Unknown;
+
         public static IPAddress ThisIpAddress;
+
+        private const int listenPort = 30003;
 
         private static Listener instance;
 
@@ -49,12 +53,13 @@ namespace RecordRemoteClientApp.Data
         public delegate void SyncMessageDetected(byte[] key);
         public event SyncMessageDetected SyncMessage;
 
-        public delegate void StatusEvent(BusyStatus bs);
-        public event StatusEvent SetStatus;
+        public delegate void BusyStatusEvent(BusyStatus bs);
+        public event BusyStatusEvent SetBusyStatus;
+
+        public delegate void PowerStatusEvent(PowerStatus bs);
+        public event PowerStatusEvent SetPowerStatus;
 
         #endregion
-
-        private const int listenPort = 30003;
 
         public void Speak()
         {
@@ -62,8 +67,6 @@ namespace RecordRemoteClientApp.Data
 
             UdpClient listener = new UdpClient(listenPort);
             IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
-
-            Sender.SendStatusMessage();
 
             try
             {
@@ -108,7 +111,6 @@ namespace RecordRemoteClientApp.Data
                                 }
                                 break;
                             case MessageCommand.Sync:
-
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
                                     byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
@@ -120,10 +122,30 @@ namespace RecordRemoteClientApp.Data
                                 break;
                             case MessageCommand.Scan:
                                 break;
-                            default:
-                                if (SetStatus != null)
+                            case MessageCommand.Power:
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    SetStatus((BusyStatus)mh.Command);
+                                    byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
+                                    if (SyncMessage != null)
+                                    {
+                                        SyncMessage(bKey);
+                                    }
+                                }
+                                else
+                                {
+                                    if (SetPowerStatus != null)
+                                    {
+                                        PowerStatus ps = ((PowerStatus)MessageParser.GetByte(bytes, ref pointer));
+                                        PowerStatusType = ps;
+                                        SetPowerStatus(ps);
+                                    }
+                                }
+                                break;
+                            default:
+                                //TODO:MAKE SURE ITS A BUSY MESSAGE!!!ie remove from default
+                                if (SetBusyStatus != null)
+                                {
+                                    SetBusyStatus((BusyStatus)mh.Command);
                                     BusyStatusType = (BusyStatus)mh.Command;
                                 }
                                 break;

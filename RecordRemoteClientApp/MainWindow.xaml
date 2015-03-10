@@ -12,8 +12,9 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <conv:IndexConverter x:Key="IndexConverter">
-            </conv:IndexConverter>
+            <conv:IndexConverter x:Key="IndexConverter"/>
+            <conv:StatusToColorConverter x:Key="StatusConverter"/>
+            <conv:InversePowerConverter x:Key="InversePowerConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -68,16 +69,41 @@
                 <RowDefinition Height="300"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid>
-                <StackPanel Orientation="Vertical">
-                    <Button Name="btnScan" Click="btnScan_Click">Scan</Button>
-                    <TextBlock HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="25"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                    
+                    <TextBlock HorizontalAlignment="Center" Background="{Binding BusyType,Converter={StaticResource StatusConverter}}">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}Status: {0}">
-                                <Binding Path="Status"/>
+                                <Binding Path="BStatus"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                </StackPanel>
+                
+                    <TextBlock HorizontalAlignment="Center" Background="{Binding PowerType,Converter={StaticResource StatusConverter}}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}Power: {0}">
+                                <Binding Path="PStatus"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                
+                <Button Name="btnScan" Click="btnScan_Click">Scan</Button>
+
+                <Button Name="btnPower" Click="btnPower_Click" Content="{Binding PowerType,Converter={StaticResource InversePowerConverter}}"></Button>
+                
             </Grid>
             <Border Grid.Row="1" BorderThickness="2" BorderBrush="Black">
                 <Image Source="{Binding CurrentAlbum.Image}" Stretch="Fill"></Image>
@@ -136,9 +162,12 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem Grid.Column="0">
-                    <Label Name="lblStatus" Content="{Binding Status}"/>
+                    <Label Name="lblBStatus" Content="{Binding BStatus}"/>
                 </StatusBarItem>
                 <Separator Grid.Column="1" />
+                <StatusBarItem Grid.Column="2">
+                    <Label Name="lblPStatus" Content="{Binding PStatus}"/>
+                </StatusBarItem>
             </StatusBar>
         </Grid>
     </Grid>

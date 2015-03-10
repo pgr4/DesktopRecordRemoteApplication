@@ -40,6 +40,7 @@ namespace RecordRemoteClientApp.Data
             return ret;
         }
 
+        //TODO:REMOVE?
         public static void SendPlayPauseMessage(bool play)
         {
             try
@@ -104,6 +105,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        //TODO:REMOVE
         public static void SendStatusMessage()
         {
             try
@@ -124,6 +126,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        //TODO:REMOVE
         public static void SendScanMessage()
         {
             try
@@ -165,8 +168,28 @@ namespace RecordRemoteClientApp.Data
                 {
                     message[i] = 111;
                 }
-                    
-               s.SendTo(message, ep);
+
+                s.SendTo(message, ep);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public static void SendGenericMessage(MessageCommand mc)
+        {
+            try
+            {
+                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+
+                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
+
+                byte[] header = GetHeader((byte)mc);
+
+                s.SendTo(header, ep);
             }
             catch (Exception e)
             {

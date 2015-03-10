@@ -103,6 +103,8 @@
     <Compile Include="Converters\BoolToColorConverter.cs" />
     <Compile Include="Converters\ButtonTextConverter.cs" />
     <Compile Include="Converters\IndexConverter.cs" />
+    <Compile Include="Converters\InversePowerConverter.cs" />
+    <Compile Include="Converters\StatusToColorConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Data\Listener.cs" />
     <Compile Include="Data\Sender.cs" />

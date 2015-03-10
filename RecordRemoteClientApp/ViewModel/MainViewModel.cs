@@ -30,19 +30,59 @@ namespace RecordRemoteClientApp.ViewModel
         private SQLiteConnection db;
         private SQLiteConnection dbConnection;
 
+        private string default_albumart_location = @"C:\Users\pat\Desktop\vinyl-record.jpg";
+        private byte[] default_albumart;
+
         #endregion
 
         #region Public Members
 
-        private string status;
+        private BusyStatus busyType;
 
-        public string Status
+        public BusyStatus BusyType
         {
-            get { return status; }
+            get { return busyType; }
             set
             {
-                status = value;
-                RaisePropertyChanged("Status");
+                busyType = value;
+                RaisePropertyChanged("BusyType");
+            }
+        }
+
+        private PowerStatus powerType;
+
+        public PowerStatus PowerType
+        {
+            get { return powerType; }
+            set
+            {
+                powerType = value;
+                RaisePropertyChanged("PowerType");
+            }
+        }
+
+        private string pStatus;
+
+        public string PStatus
+        {
+            get { return pStatus; }
+            set
+            {
+                pStatus = value;
+                RaisePropertyChanged("PStatus");
+            }
+        }
+
+
+        private string bstatus;
+
+        public string BStatus
+        {
+            get { return bstatus; }
+            set
+            {
+                bstatus = value;
+                RaisePropertyChanged("BStatus");
             }
         }
 
@@ -167,13 +207,46 @@ namespace RecordRemoteClientApp.ViewModel
 
             DataListener = Listener.Instance;
             DataListener.NewAlbumEvent += DataListener_newAlbumEvent;
-            DataListener.SetStatus += DataListener_SetStatus;
+            DataListener.SetPowerStatus += DataListener_SetPowerStatus;
+            DataListener.SetBusyStatus += DataListener_SetBusyStatus;
             DataListener.SyncMessage += DataListener_SyncMessage;
 
-            status = BusyStatus.Unknown.ToString();
+            PowerType = PowerStatus.Unknown;
+            BusyType = BusyStatus.Unknown;
+            BStatus = BusyStatus.Unknown.ToString();
+            PStatus = PowerStatus.Unknown.ToString();
 
             StartDataListener();
 
+            InitDatabase();
+
+            RefreshSongList();
+
+            GetDefaultAlbumArt();
+
+            Sender.SendGenericMessage(MessageCommand.Status);
+            Sender.SendGenericMessage(MessageCommand.Power);
+        }
+
+        #endregion
+
+        #region Private Functions
+
+        private void GetDefaultAlbumArt()
+        {
+            var img = Image.FromFile(default_albumart_location);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                img.Save(ms, ImageFormat.Jpeg);
+                default_albumart = ms.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Create or get the database
+        /// </summary>
+        private void InitDatabase()
+        {
             if (!File.Exists(@"C:\RecordWebApi\Master.sqlite"))
             {
                 //CREATING DB
@@ -205,24 +278,8 @@ namespace RecordRemoteClientApp.ViewModel
             }
 
             RefreshDatabaseTables();
-
-            RefreshSongList();
-
-            var img = Image.FromFile(default_albumart_location);
-            using (MemoryStream ms = new MemoryStream())
-            {
-                img.Save(ms, ImageFormat.Jpeg);
-                default_albumart = ms.ToArray();
-            }
         }
 
-        #endregion
-
-        private string default_albumart_location = @"C:\Users\pat\Desktop\vinyl-record.jpg";
-        private byte[] default_albumart;
-
-
-        #region Private Functions
 
         /// <summary>
         /// Initialize or ReInitialize the records from the album and song databases
@@ -380,9 +437,16 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        private void DataListener_SetStatus(BusyStatus bs)
+        private void DataListener_SetBusyStatus(BusyStatus bs)
         {
-            Status = bs.ToDescriptionString();
+            BusyType = bs;
+            BStatus = bs.ToDescriptionString();
+        }
+
+        private void DataListener_SetPowerStatus(PowerStatus ps)
+        {
+            PowerType = ps;
+            PStatus = ps.ToString();
         }
 
         #endregion
