@@ -10,7 +10,7 @@ namespace RecordRemoteClientApp.Models.LastFM
     public class LastFMAlbum
     {
          public LastFMAlbum()
-        {
+         {
             Songs = new List<string>();
         }
 

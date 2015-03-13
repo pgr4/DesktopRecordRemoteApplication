@@ -103,16 +103,18 @@
     <Compile Include="Converters\BoolToColorConverter.cs" />
     <Compile Include="Converters\ButtonTextConverter.cs" />
     <Compile Include="Converters\IndexConverter.cs" />
+    <Compile Include="Converters\InverseBoolToVisibility.cs" />
     <Compile Include="Converters\InversePowerConverter.cs" />
     <Compile Include="Converters\StatusToColorConverter.cs" />
+    <Compile Include="Converters\TabEnableConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Data\Listener.cs" />
     <Compile Include="Data\Sender.cs" />
     <Compile Include="Misc\Enumerations.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\AssociationPicture.cs" />
+    <Compile Include="Models\GenericPictureName.cs" />
     <Compile Include="Models\LastFM\LastFMAlbum.cs" />
-    <Compile Include="Models\LastFM\LastFMArtist.cs" />
     <Compile Include="Models\LastFM\LastFMLookup.cs" />
     <Compile Include="Models\MessageHeader.cs" />
     <Compile Include="Models\MessageParser.cs" />
@@ -121,9 +123,13 @@
     <Compile Include="Models\tblAlbum.cs" />
     <Compile Include="Models\tblSong.cs" />
     <Compile Include="ViewModel\AlbumTrackAssociationViewModel.cs" />
+    <Compile Include="ViewModel\AutoAlbumTrackAssociationViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Views\AlbumTrackAssociationView.xaml.cs">
       <DependentUpon>AlbumTrackAssociationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AutoAlbumTrackAssociationView.xaml.cs">
+      <DependentUpon>AutoAlbumTrackAssociationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CurrectAlbumUserControlView.xaml.cs">
       <DependentUpon>CurrectAlbumUserControlView.xaml</DependentUpon>
@@ -147,6 +153,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AlbumTrackAssociationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AutoAlbumTrackAssociationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

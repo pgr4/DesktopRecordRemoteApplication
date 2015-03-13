@@ -17,11 +17,11 @@ namespace RecordRemoteClientApp.Models
         private const string StartQuery = "http://ws.audioscrobbler.com/2.0/?";
         private const string EndQuery = "&api_key=557e6ea3fad888bd915f713613941051";
 
-        public static List<LastFMArtist> ArtistQuery(string queryString)
+        public static List<GenericPictureName> ArtistQuery(string queryString)
         {
             try
             {
-                List<LastFMArtist> FMArtistList = new List<LastFMArtist>();
+                List<GenericPictureName> FMArtistList = new List<GenericPictureName>();
                 string tot = StartQuery + QueryType.Artist.ToDescriptionString() + WebUtility.UrlEncode(queryString) + EndQuery;
                 var request = WebRequest.Create(tot);
                 string text;
@@ -45,7 +45,7 @@ namespace RecordRemoteClientApp.Models
                 {
                     if (IsAble(item.Element("name").Value.ToLower(), queryString.ToLower()))
                     {
-                        FMArtistList.Add(new LastFMArtist(item.Element("name").Value));
+                        FMArtistList.Add(new GenericPictureName(item.Element("name").Value, item.Element("image").Value));
                     }
                 }
 
@@ -53,15 +53,15 @@ namespace RecordRemoteClientApp.Models
             }
             catch
             {
-                return new List<LastFMArtist>();
+                return new List<GenericPictureName>();
             }
         }
 
-        public static List<LastFMAlbum> AlbumQuery(string queryString, string artistName)
+        public static List<GenericPictureName> AlbumQuery(string queryString)
         {
             try
             {
-                List<LastFMAlbum> FMAlbumList = new List<LastFMAlbum>();
+                List<GenericPictureName> FMAlbumList = new List<GenericPictureName>();
                 string tot = StartQuery + QueryType.Album.ToDescriptionString() + WebUtility.UrlEncode(queryString) + EndQuery;
                 var request = WebRequest.Create(tot);
                 string text;
@@ -78,23 +78,20 @@ namespace RecordRemoteClientApp.Models
 
                 XElement sd = XElement.Parse(text);
 
-                var list = (from x in sd.Element("results").Element("albummatches").Elements()
-                    select x).ToList();
+                var list = (from x in sd.Element("topalbums").Elements()
+                            select x).ToList();
 
                 var webClient = new WebClient();
                 foreach (var item in list)
                 {
-                    if (IsAble(item.Element("name").Value.ToLower(), queryString.ToLower()) && (artistName == item.Element("artist").Value))
-                   {
-                       FMAlbumList.Add(new LastFMAlbum(item.Element("name").Value, item.Element("artist").Value, item.Element("url").Value, webClient.DownloadData(item.Elements("image").FirstOrDefault(i => i.Attribute("size").Value == "extralarge").Value)));
-                    }
+                    FMAlbumList.Add(new GenericPictureName(item.Element("name").Value, item.Elements("image").FirstOrDefault(i => i.Attribute("size").Value == "extralarge").Value));
                 }
 
                 return FMAlbumList.OrderBy(i => i.Name).ToList();
             }
             catch
             {
-                return new List<LastFMAlbum>();
+                return new List<GenericPictureName>();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Data.Linq;
+using System.Windows.Forms;
 using GalaSoft.MvvmLight;
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.Models.LastFM;
@@ -15,12 +16,45 @@ using TagLib;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace RecordRemoteClientApp.ViewModel
 {
-    public class AlbumTrackAssociationViewModel : ViewModelBase
+    public class AutoAlbumTrackAssociationViewModel : ViewModelBase
     {
         #region Members
+
+        /// <summary>
+        /// 0: Getting Artist
+        /// 1: Getting Albums
+        /// 2: Done
+        /// </summary>
+        public int MethodLevel { get; set; }
+
+        private Visibility autoListVisibility;
+
+        public Visibility AutoListVisibility
+        {
+            get { return autoListVisibility; }
+            set
+            {
+                autoListVisibility = value;
+                RaisePropertyChanged("AutoListVisibility");
+            }
+        }
+
+        private Visibility songListVisibility;
+
+        public Visibility SongListVisibility
+        {
+            get { return songListVisibility; }
+            set
+            {
+                songListVisibility = value;
+                RaisePropertyChanged("SongListVisibility");
+            }
+        }
 
         private ObservableCollection<GenericPictureName> autoList;
 
@@ -33,7 +67,6 @@ namespace RecordRemoteClientApp.ViewModel
                 RaisePropertyChanged("AutoList");
             }
         }
-        
 
         private bool isAutoFill;
 
@@ -46,7 +79,7 @@ namespace RecordRemoteClientApp.ViewModel
                 RaisePropertyChanged("IsAutoFill");
             }
         }
-        
+
         private Visibility showAlbumHint;
 
         public Visibility ShowAlbumHint
@@ -58,10 +91,6 @@ namespace RecordRemoteClientApp.ViewModel
                 RaisePropertyChanged("ShowAlbumHint");
             }
         }
-        
-
-        public string AlbumName { get; set; }
-        public string ArtistName { get; set; }
 
         private int _numberOfSongs { get; set; }
 
@@ -69,20 +98,26 @@ namespace RecordRemoteClientApp.ViewModel
         private BackgroundWorker _bwAlbum;
         private BackgroundWorker _bwAlbumInfo;
 
-        private string LastSearchedArtist { get; set; }
-        private string LastSearchedAlbum { get; set; }
-
         public ObservableCollection<SongAndNumber> SongList { get; set; }
-        public ObservableCollection<LastFMAlbum> AlbumList { get; set; }
         public ObservableCollection<AssociationPicture> AlbumArtList { get; set; }
 
         public bool ArtistsVisible { get; set; }
         public bool AlbumsVisible { get; set; }
 
-        public LastFMAlbum SelectedAlbum { get; set; }
+        public GenericPictureName SelectedArtist { get; set; }
+        public GenericPictureName SelectedAlbum { get; set; }
 
-        public Visibility ArtistBusyVisibility { get { return _bwArtist.IsBusy ? Visibility.Visible : Visibility.Collapsed; } }
-        public Visibility AlbumBusyVisibility { get { return _bwAlbum.IsBusy ? Visibility.Visible : Visibility.Collapsed; } }
+        private Visibility isBusyVisibility;
+
+        public Visibility IsBusyVisibility
+        {
+            get { return isBusyVisibility; }
+            set
+            {
+                isBusyVisibility = value;
+                RaisePropertyChanged("IsBusyVisibility");
+            }
+        }
 
         private SongAndNumber _selectedSongAndNumber;
 
@@ -117,12 +152,22 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Constructors
 
-        public AlbumTrackAssociationViewModel(int songCount)
+        public AutoAlbumTrackAssociationViewModel(int songCount)
         {
+            MethodLevel = 0;
+
+            _bwArtist = new BackgroundWorker();
+            _bwArtist.DoWork += bwArtist_DoWork;
+
+            _bwAlbum = new BackgroundWorker();
+            _bwAlbum.DoWork += bwAlbum_DoWork;
+
+            _bwAlbumInfo = new BackgroundWorker();
+            _bwAlbumInfo.DoWork += bwAlbumInfo_DoWork;
+
             _numberOfSongs = songCount;
 
             SongList = new ObservableCollection<SongAndNumber>();
-            AlbumList = new ObservableCollection<LastFMAlbum>();
             AlbumArtList = new ObservableCollection<AssociationPicture>();
 
             AutoList = new ObservableCollection<GenericPictureName>();
@@ -130,14 +175,16 @@ namespace RecordRemoteClientApp.ViewModel
             ArtistsVisible = false;
             AlbumsVisible = false;
 
+            SelectedArtist = null;
             SelectedAlbum = null;
 
             OperationState = "Normal";
 
-            CanSubmitEntry = false;
+            SongListVisibility = Visibility.Collapsed;
+            AutoListVisibility = Visibility.Visible;
+            IsBusyVisibility = Visibility.Collapsed;
 
-            //TODO:Get from settings REMOVE
-            IsAutoFill = true;
+            CanSubmitEntry = false;
 
             for (int i = 0; i < songCount; i++)
             {
@@ -148,7 +195,6 @@ namespace RecordRemoteClientApp.ViewModel
 
             RaisePropAll();
         }
-
         #endregion
 
         #region Functions
@@ -183,15 +229,15 @@ namespace RecordRemoteClientApp.ViewModel
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(ArtistName))
+            if (SelectedArtist == null)
             {
-                sb.Append("Artist Name\n");
+                sb.Append("Artist\n");
                 ret = false;
             }
 
-            if (string.IsNullOrWhiteSpace(AlbumName))
+            if (SelectedAlbum == null)
             {
-                sb.Append("Album Name\n");
+                sb.Append("Album\n");
                 ret = false;
             }
 
@@ -238,6 +284,8 @@ namespace RecordRemoteClientApp.ViewModel
 
             RaisePropertyChanged("SongList");
         }
+
+        #region Reordering Songs
 
         public void RenumberSongList()
         {
@@ -322,6 +370,22 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        public void CheckSongListNumbers()
+        {
+            SongList = new ObservableCollection<SongAndNumber>(SongList.OrderBy(i => i.Number).ToList());
+
+            //If the number does not match the position in the list then set it to it
+            //Could do more in here to further improve upon this
+            foreach (var item in SongList.Where(item => item.Number != (SongList.IndexOf(item) + 1).ToString()))
+            {
+                item.Number = (SongList.IndexOf(item) + 1).ToString();
+            }
+        }
+
+        #endregion
+
+        #region Misc
+
         public void Browse()
         {
             try
@@ -346,8 +410,8 @@ namespace RecordRemoteClientApp.ViewModel
                         TagLib.File f = TagLib.File.Create(item);
                         SongList.Add(new SongAndNumber(f.Tag.Track.ToString(), f.Tag.Title));
                         //Grabbing last file's Artist and Album
-                        AlbumName = f.Tag.Album;
-                        ArtistName = f.Tag.FirstArtist; //Deprecated
+                        SelectedAlbum =new GenericPictureName(f.Tag.Album);
+                        SelectedArtist = new GenericPictureName(f.Tag.FirstArtist);//Deprecated
 
                         for (int i = 0; i < f.Tag.Pictures.Count(); i++)
                         {
@@ -384,18 +448,6 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        public void CheckSongListNumbers()
-        {
-            SongList = new ObservableCollection<SongAndNumber>(SongList.OrderBy(i => i.Number).ToList());
-
-            //If the number does not match the position in the list then set it to it
-            //Could do more in here to further improve upon this
-            foreach (var item in SongList.Where(item => item.Number != (SongList.IndexOf(item) + 1).ToString()))
-            {
-                item.Number = (SongList.IndexOf(item) + 1).ToString();
-            }
-        }
-
         public void SelectAlbumArt(AssociationPicture ap)
         {
             foreach (var item in AlbumArtList)
@@ -426,10 +478,108 @@ namespace RecordRemoteClientApp.ViewModel
             {
                 MessageBox.Show("Select an appropriate file to add", "Error");
             }
-           
+
         }
 
         #endregion
 
+        #region Background Worker
+        public void GetArtists(string searchString)
+        {
+            MethodLevel = 0;
+            _bwArtist.RunWorkerAsync(searchString);
+        }
+
+        private void GetAlbums()
+        {
+            _bwAlbum.RunWorkerAsync();
+        }
+
+        private void GetAlbumInfo()
+        {
+            _bwAlbumInfo.RunWorkerAsync();
+        }
+
+        private void bwArtist_DoWork(object sender, DoWorkEventArgs e)
+        {
+            AutoList = new ObservableCollection<GenericPictureName>(LastFMLookup.ArtistQuery(e.Argument.ToString()));
+
+            RaisePropertyChanged("AutoList");
+            RaisePropertyChanged("IsBusyVisibility");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bwAlbum_DoWork(object sender, DoWorkEventArgs e)
+        {
+            AutoList = new ObservableCollection<GenericPictureName>(LastFMLookup.AlbumQuery(SelectedArtist.Name));
+
+            RaisePropertyChanged("AutoList");
+            RaisePropertyChanged("IsBusyVisibility");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bwAlbumInfo_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<string> lst = LastFMLookup.AlbumInfoQuery(SelectedArtist.Name, SelectedAlbum.Name, _numberOfSongs);
+
+            SongList = new ObservableCollection<SongAndNumber>();
+
+            for (int i = 0; i < lst.Count; i++)
+            {
+                SongList.Add(new SongAndNumber((i + 1).ToString(), lst[i]));
+            }
+
+            if (SongList.Count < _numberOfSongs)
+            {
+                AddDummieSongs();
+            }
+
+            //TODO:CHANGE VISIBILITY OF LISTS
+
+            RaisePropertyChanged("SongList");
+        }
+
+        /// <summary>
+        /// Called after double clicking an artist.
+        /// Set the artist and setup for album detection
+        /// </summary>
+        /// <param name="gpn"></param>
+        public void SetSelectedArtist(GenericPictureName gpn)
+        {
+            MethodLevel = 1;
+            SelectedArtist = gpn;
+
+            SelectedAlbum = null;
+            AutoList.Clear();
+
+            GetAlbums();
+        }
+
+        /// <summary>
+        /// Called after double clicking an album.
+        /// Set the album and display songs
+        /// </summary>
+        /// <param name="gpn"></param>
+        public void SetSelectedAlbum(GenericPictureName gpn)
+        {
+            MethodLevel = 2;
+            SelectedAlbum = gpn;
+            AutoList.Clear();
+            AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = SelectedAlbum.ImBytes });
+
+            GetAlbumInfo();
+        }
+
+        #endregion
+
+        #endregion
     }
 }

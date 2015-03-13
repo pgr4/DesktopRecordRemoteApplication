@@ -3,7 +3,7 @@
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
         xmlns:local="clr-namespace:RecordRemoteClientApp.Views"
-        x:Class="RecordRemoteClientApp.Views.AlbumTrackAssociationView"
+        x:Class="RecordRemoteClientApp.Views.AutoAlbumTrackAssociationView"
         Title="AlbumTrackAssociationView" SizeToContent="Height" Width="400"
         AllowDrop="True"
         Drop="AlbumTrackAssociationView_OnDrop"
@@ -15,6 +15,7 @@
             <conv:VisibilityConverter x:Key="B2V"/>
             <conv:ButtonTextConverter x:Key="ButtonConverter"/>
             <conv:BoolToColorConverter x:Key="BoolToColorConverter"></conv:BoolToColorConverter>
+            <conv:InverseBoolToVisibility x:Key="IB2V"></conv:InverseBoolToVisibility>
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -27,7 +28,8 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <ListBox x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" SelectedItem="{Binding SelectedSongAndNumber, Mode=TwoWay}" SelectionChanged="songListBox_SelectionChanged" Tag="{Binding OperationState, Mode=TwoWay}">
+            <ListBox x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding SongListVisibility}"
+                     SelectedItem="{Binding SelectedSongAndNumber, Mode=TwoWay}" SelectionChanged="songListBox_SelectionChanged" Tag="{Binding OperationState, Mode=TwoWay}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -41,13 +43,18 @@
                                 <ColumnDefinition Width="5"/>
                                 <ColumnDefinition Width="40"/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="5"/>
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Column="1" Content="{Binding Number, Mode=TwoWay}"/>
 
                             <TextBox Grid.Column="2" VerticalContentAlignment="Center" Text="{Binding Name, Mode=TwoWay}" IsTabStop="True"/>
 
-                            <!--<Button Grid.Column="4" x:Name="btnMerge" Click="btnMerge_Click" Content="{Binding Tag, Converter={StaticResource ButtonConverter}, ElementName=songListBox}" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">
+                            <Button Grid.Column="4" x:Name="btnMerge" Click="btnMerge_Click" Content="{Binding Tag, Converter={StaticResource ButtonConverter}, ElementName=songListBox}" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">
                                 <Button.Visibility>
                                     <MultiBinding Converter="{StaticResource B2V}">
                                         <Binding Path="Number"/>
@@ -63,7 +70,27 @@
                                         <Binding ElementName="songListBox"/>
                                     </MultiBinding>
                                 </Button.Visibility>
-                            </Button>-->
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding AutoListVisibility}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                       <EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler"></EventSetter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Image Source="{Binding ImgSource}" Grid.Column="0"></Image>
+                            <Label Content="{Binding Name}" Grid.Column="2"></Label>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -95,32 +122,27 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
-            
+
             <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <Label VerticalContentAlignment="Center" Content="Artist" Grid.Column="0"/>
-
-                <TextBox x:Name="txtArtist" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
-            </Grid>
-            
-            <Grid Grid.Column="3">
-                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="50"/>
-                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Label VerticalContentAlignment="Center" Content="Album" Grid.Column="0"/>
+                <Label VerticalContentAlignment="Center" Content="Artist:" Grid.Column="0"/>
 
-                <TextBox x:Name="txtAlbum" VerticalContentAlignment="Center" Text="{Binding AlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+                <TextBox x:Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+                <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick">
+                    <Grid>
+                        <Image Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding IsBusyVisibility}"/>
+                        <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding IsBusyVisibility,Converter={StaticResource IB2V}}">GO</Label>
+                    </Grid>
+                </Button>
             </Grid>
-            
+
         </Grid>
 
         <Grid Grid.Row="4">

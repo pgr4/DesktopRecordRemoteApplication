@@ -410,24 +410,24 @@ namespace RecordRemoteClientApp.ViewModel
             //Must accept the event by user in order to be put in database
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
-                AlbumTrackAssociationView ATAssocView = new AlbumTrackAssociationView(na.Breaks);
+                AutoAlbumTrackAssociationView ATAssocView = new AutoAlbumTrackAssociationView(na.Breaks);
                 ATAssocView.Show();
 
                 ATAssocView.Closed += delegate
                 {
-                    if (((AlbumTrackAssociationViewModel)ATAssocView.DataContext).CanSubmitEntry)
+                    if (((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).CanSubmitEntry)
                     {
                         int i = 0;
 
                         //Go through all the songs in the Association View and add them to the database
-                        foreach (SongAndNumber sn in ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).SongList)
+                        foreach (SongAndNumber sn in ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SongList)
                         {
-                            AddSongToDatabase(na.Key, sn.Name, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, i++);
+                            //AddSongToDatabase(na.Key, sn.Name, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, i++);
                         }
 
                         //Add the album to the database
-                        AddAlbumToDatabase(na.Key, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, true, na.Breaks,
-                            ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum == null ? default_albumart : ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum.Image);
+                       // AddAlbumToDatabase(na.Key, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, true, na.Breaks,
+                          //  ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum == null ? default_albumart : ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum.Image);
 
                         RefreshCurrentSongList(na.Key);
 

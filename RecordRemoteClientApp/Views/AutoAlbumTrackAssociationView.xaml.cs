@@ -2,26 +2,19 @@
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace RecordRemoteClientApp.Views
 {
     /// <summary>
-    /// Interaction logic for AlbumTrackAssociationView.xaml
+    /// Interaction logic for AutoAlbumTrackAssociationView.xaml
     /// </summary>
-    public partial class AlbumTrackAssociationView : Window
+    public partial class AutoAlbumTrackAssociationView : Window
     {
         #region Properties
 
@@ -31,15 +24,15 @@ namespace RecordRemoteClientApp.Views
 
         #region Constructors
 
-        public AlbumTrackAssociationView()
+        public AutoAlbumTrackAssociationView()
         {
             InitializeComponent();
         }
 
-        public AlbumTrackAssociationView(int songCount)
+        public AutoAlbumTrackAssociationView(int songCount)
         {
             InitializeComponent();
-            DataContext = new AlbumTrackAssociationViewModel(songCount);
+            DataContext = new AutoAlbumTrackAssociationViewModel(songCount);
         }
 
         #endregion
@@ -48,11 +41,46 @@ namespace RecordRemoteClientApp.Views
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            if (((AlbumTrackAssociationViewModel)DataContext).CanCloseWindow())
+            if (((AutoAlbumTrackAssociationViewModel)DataContext).CanCloseWindow())
             {
                 Close();
             }
         }
+
+        /// <summary>
+        /// Hitting the search button will cause a lookup of the textbox data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+
+            vm.GetArtists(SearchTextBox.Text);
+        }
+
+        /// <summary>
+        /// Called when a list item is double clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+            if (vm.MethodLevel == 0)
+            {
+                SearchTextBox.Text = "";
+                GenericPictureName gpn = ((ListBoxItem) sender).Content as GenericPictureName;
+                vm.SetSelectedArtist(gpn);
+            }
+            else if (vm.MethodLevel == 1)
+            {
+                GenericPictureName gpn = ((ListBoxItem)sender).Content as GenericPictureName;
+                vm.SetSelectedAlbum(gpn);
+            }
+        }
+
+        #region SongList Functions
 
         /// <summary>
         /// On selection change of the main listbox we need to refresh the bindings of the buttons in each listbox item
@@ -98,7 +126,7 @@ namespace RecordRemoteClientApp.Views
             else if (songListBox.Tag.ToString() == "Merge")
             {
                 //Merge the the ListBox's selected item and the sender
-                ((AlbumTrackAssociationViewModel)DataContext).MergeSelectedTrack();
+                ((AutoAlbumTrackAssociationViewModel)DataContext).MergeSelectedTrack();
 
                 //Set the background
                 SetListBoxItemBackground("Normal");
@@ -158,19 +186,23 @@ namespace RecordRemoteClientApp.Views
         {
             Button btn = sender as Button;
             SongAndNumber san = ((ContentPresenter)btn.TemplatedParent).Content as SongAndNumber;
-            ((AlbumTrackAssociationViewModel)DataContext).DeleteSong(san);
+            ((AutoAlbumTrackAssociationViewModel)DataContext).DeleteSong(san);
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             _browsing = true;
-            ((AlbumTrackAssociationViewModel)DataContext).Browse();
+            ((AutoAlbumTrackAssociationViewModel)DataContext).Browse();
             _browsing = false;
         }
 
+        #endregion
+
+        #region Dragging Functions
+
         private void imgArtAlbum_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var vm = DataContext as AlbumTrackAssociationViewModel;
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
             vm.SelectAlbumArt(((Image)sender).DataContext as AssociationPicture);
         }
 
@@ -178,7 +210,7 @@ namespace RecordRemoteClientApp.Views
         {
             var window = (Window)sender;
             window.Opacity = 1;
-            var vm = window.DataContext as AlbumTrackAssociationViewModel;
+            var vm = window.DataContext as AutoAlbumTrackAssociationViewModel;
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -207,10 +239,7 @@ namespace RecordRemoteClientApp.Views
             DragLabel.Visibility = Visibility.Collapsed;
         }
 
-        private void AutoListBox_OnSelected(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
         #endregion
 
@@ -238,6 +267,6 @@ namespace RecordRemoteClientApp.Views
 
         #endregion
 
-        
+
     }
 }

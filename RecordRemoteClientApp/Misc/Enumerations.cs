@@ -63,7 +63,7 @@ namespace RecordRemoteClientApp.Enumerations
     {
         [Description("method=artist.search&artist=")]
         Artist,
-        [Description("method=album.search&album=")]
+        [Description("method=artist.gettopalbums&artist=")]
         Album,
         [Description("method=album.getinfo&")]
         AlbumInfo

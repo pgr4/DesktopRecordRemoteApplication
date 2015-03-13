@@ -15,6 +15,7 @@
             <conv:IndexConverter x:Key="IndexConverter"/>
             <conv:StatusToColorConverter x:Key="StatusConverter"/>
             <conv:InversePowerConverter x:Key="InversePowerConverter"/>
+            <conv:TabEnableConverter x:Key="TabEnableConverter"></conv:TabEnableConverter>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -123,7 +124,7 @@
                     </vws:SongUserControlView>
                 </TabItem>
 
-                <TabItem Header="Current Album">
+                <TabItem Header="Current Album" IsEnabled="{Binding CurrentAlbum,Converter={StaticResource TabEnableConverter}}">
                     <vws:CurrectAlbumUserControlView>
                     </vws:CurrectAlbumUserControlView>
                 </TabItem>

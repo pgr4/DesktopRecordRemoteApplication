@@ -21,13 +21,10 @@ namespace RecordRemoteClientApp.Converters
                 {
                     case BusyStatus.Ready:
                         return new SolidColorBrush(Colors.Green);
-                        break;
                     case BusyStatus.Unknown:
                         return new SolidColorBrush(Colors.Red);
-                        break;
                     default:
                         return new SolidColorBrush(Colors.Yellow);
-                        break;
                 }
             }
             else if(t == typeof(PowerStatus))
@@ -36,10 +33,8 @@ namespace RecordRemoteClientApp.Converters
                 {
                     case PowerStatus.On:
                         return new SolidColorBrush(Colors.Green);
-                        break;
                     default:
                         return new SolidColorBrush(Colors.Red);
-                        break;
                 }
             }
 
