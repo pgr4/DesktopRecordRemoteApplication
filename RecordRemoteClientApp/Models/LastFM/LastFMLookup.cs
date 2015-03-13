@@ -45,7 +45,7 @@ namespace RecordRemoteClientApp.Models
                 {
                     if (IsAble(item.Element("name").Value.ToLower(), queryString.ToLower()))
                     {
-                        FMArtistList.Add(new GenericPictureName(item.Element("name").Value, item.Element("image").Value));
+                        FMArtistList.Add(new GenericPictureName(item.Element("name").Value, item.Elements("image").Last().Value));
                     }
                 }
 

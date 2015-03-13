@@ -16,6 +16,7 @@
             <conv:ButtonTextConverter x:Key="ButtonConverter"/>
             <conv:BoolToColorConverter x:Key="BoolToColorConverter"></conv:BoolToColorConverter>
             <conv:InverseBoolToVisibility x:Key="IB2V"></conv:InverseBoolToVisibility>
+            <conv:AssociationConverter x:Key="AssociationConverter"></conv:AssociationConverter>
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -27,8 +28,8 @@
             <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <ListBox x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding SongListVisibility}"
+        <Grid Grid.Row="0" MaxHeight="400">
+            <ListBox x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=3}"
                      SelectedItem="{Binding SelectedSongAndNumber, Mode=TwoWay}" SelectionChanged="songListBox_SelectionChanged" Tag="{Binding OperationState, Mode=TwoWay}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
@@ -75,26 +76,27 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <ListBox x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding AutoListVisibility}">
+            <ListBox x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter}}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
-                       <EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler"></EventSetter>
+                        <EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler"></EventSetter>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid Height="100">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="5"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding ImgSource}" Grid.Column="0"></Image>
-                            <Label Content="{Binding Name}" Grid.Column="2"></Label>
+                            <Image Source="{Binding ImgSource}" Grid.Column="0" Stretch="Fill"></Image>
+                            <Label Content="{Binding Name}" VerticalContentAlignment="Center" Grid.Column="2" FontSize="22"></Label>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Image Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=-1}"/>
         </Grid>
 
         <Grid Grid.Row="1" MaxHeight="200">
@@ -136,10 +138,7 @@
 
                 <TextBox x:Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
                 <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick">
-                    <Grid>
-                        <Image Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding IsBusyVisibility}"/>
-                        <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding IsBusyVisibility,Converter={StaticResource IB2V}}">GO</Label>
-                    </Grid>
+                    <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center">GO</Label>
                 </Button>
             </Grid>
 

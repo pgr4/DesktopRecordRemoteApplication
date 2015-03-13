@@ -67,13 +67,12 @@ namespace RecordRemoteClientApp.Views
         private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e)
         {
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
-            if (vm.MethodLevel == 0)
+            if (vm.MethodLevel == 1)
             {
-                SearchTextBox.Text = "";
                 GenericPictureName gpn = ((ListBoxItem) sender).Content as GenericPictureName;
                 vm.SetSelectedArtist(gpn);
             }
-            else if (vm.MethodLevel == 1)
+            else if (vm.MethodLevel == 2)
             {
                 GenericPictureName gpn = ((ListBoxItem)sender).Content as GenericPictureName;
                 vm.SetSelectedAlbum(gpn);

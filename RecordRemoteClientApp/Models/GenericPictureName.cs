@@ -3,8 +3,8 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
+using System.Windows.Media.Imaging;
 
 namespace RecordRemoteClientApp.Models
 {
@@ -32,14 +32,14 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
-        private byte[] imBytes;
+        private byte[] imgBytes;
 
-        public byte[] ImBytes
+        public byte[] ImgBytes
         {
-            get { return imBytes; }
+            get { return imgBytes; }
             set
             {
-                imBytes = value;
+                imgBytes = value;
             }
         }
 
@@ -57,36 +57,29 @@ namespace RecordRemoteClientApp.Models
         {
             Name = name;
             var bitmapImage = new BitmapImage();
-            var imageBuffer = new WebClient().DownloadData(image);
-            using (var ms = new MemoryStream(imageBuffer))
+            if (image == "")
             {
                 bitmapImage.BeginInit();
-                bitmapImage.StreamSource = ms;
+                bitmapImage.UriSource = new Uri(@"C:\Users\pat\Desktop\vinyl-record.jpg");
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
             }
-            bitmapImage.Freeze();
+            else
+            {
+                var imageBuffer = new WebClient().DownloadData(image);
+                
+                ImgBytes = imageBuffer;
+
+                using (var ms = new MemoryStream(imageBuffer))
+                {
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = ms;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.EndInit();
+                }
+                bitmapImage.Freeze();
+            }
             ImgSource = bitmapImage;
         }
-
-        public GenericPictureName(string name, byte[] image)
-        {
-            Name = name;
-            ImgSource = ByteToImage(image);
-        }
-
-        private ImageSource ByteToImage(byte[] imageData)
-        {
-            BitmapImage biImg = new BitmapImage();
-            MemoryStream ms = new MemoryStream(imageData);
-            biImg.BeginInit();
-            biImg.StreamSource = ms;
-            biImg.EndInit();
-
-            ImageSource imgSrc = biImg as ImageSource;
-
-            return imgSrc;
-        }
-
     }
 }
