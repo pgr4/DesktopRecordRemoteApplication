@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
@@ -56,9 +57,15 @@ namespace RecordRemoteClientApp.Models
         {
             Name = name;
             var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new Uri(image); ;
-            bitmapImage.EndInit();
+            var imageBuffer = new WebClient().DownloadData(image);
+            using (var ms = new MemoryStream(imageBuffer))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = ms;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+            }
+            bitmapImage.Freeze();
             ImgSource = bitmapImage;
         }
 
