@@ -39,6 +39,12 @@ namespace RecordRemoteClientApp.Views
 
         #region Methods
 
+        private void BackButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+            vm.GoBack();
+        }
+
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             if (((AutoAlbumTrackAssociationViewModel)DataContext).CanCloseWindow())
@@ -57,6 +63,21 @@ namespace RecordRemoteClientApp.Views
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
 
             vm.GetArtists(SearchTextBox.Text);
+        }
+
+        /// <summary>
+        /// If the user presses enter in the search text box then search 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchTextBox_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+
+                vm.GetArtists(SearchTextBox.Text);
+            }
         }
 
         /// <summary>
@@ -265,7 +286,5 @@ namespace RecordRemoteClientApp.Views
         }
 
         #endregion
-
-
     }
 }

@@ -44,6 +44,33 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        private string queryResult;
+
+        public string QueryResult
+        {
+            get
+            {
+                if (SelectedArtist != null && SelectedAlbum != null)
+                {
+                    return "Showing results for " + SelectedArtist.Name + "'s " + SelectedAlbum.Name;
+                }
+                else if (SelectedArtist != null)
+                {
+                    return "Showing Albums for " + SelectedArtist.Name;
+                }
+                else
+                {
+                    return queryResult;
+                }
+            }
+            set
+            {
+                queryResult = "Showing artists matching  \"" + value + "\"";
+                RaisePropertyChanged("QueryResult");
+            }
+        }
+
+
         private ObservableCollection<GenericPictureName> autoList;
 
         public ObservableCollection<GenericPictureName> AutoList
@@ -185,92 +212,6 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Functions
 
-        public void RaisePropAll()
-        {
-            RaisePropertyChanged("AlbumName");
-            RaisePropertyChanged("ArtistName");
-            RaisePropertyChanged("SongList");
-            RaisePropertyChanged("ArtistList");
-            RaisePropertyChanged("AlbumList");
-            RaisePropertyChanged("ArtistsVisible");
-            RaisePropertyChanged("AlbumsVisible");
-        }
-
-        /// <summary>
-        /// Will not allow the user to close the window manually if information is not filled out for the album
-        /// </summary>
-        /// <returns></returns>
-        public bool CanCloseWindow()
-        {
-            StringBuilder sb = new StringBuilder("Fill in a value for the following\n");
-
-            bool ret = true;
-
-            foreach (SongAndNumber san in SongList)
-            {
-                if (string.IsNullOrWhiteSpace(san.Name))
-                {
-                    sb.Append("Song Number " + san.Number + "\n");
-                    ret = false;
-                }
-            }
-
-            if (SelectedArtist == null)
-            {
-                sb.Append("Artist\n");
-                ret = false;
-            }
-
-            if (SelectedAlbum == null)
-            {
-                sb.Append("Album\n");
-                ret = false;
-            }
-
-            if (SongList.Count != _numberOfSongs)
-            {
-                sb.Append("Need " + _numberOfSongs + " tracks\n");
-                ret = false;
-            }
-
-            if (!ret)
-            {
-                MessageBox.Show(sb.ToString());
-                CanSubmitEntry = false;
-            }
-            else
-            {
-                CanSubmitEntry = true;
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        /// Fill the SongList with the arr 
-        /// Fills SongList with amount of _numberOfSongs
-        /// If there is not enough strings in arr then it will add empty strings as the song name
-        /// </summary>
-        /// <param name="arr"></param>
-        public void FillSongList(string[] arr)
-        {
-            SongList.Clear();
-
-            for (int i = 0; i < _numberOfSongs; i++)
-            {
-                if (arr.Count() > i)
-                {
-                    SongList.Add(new SongAndNumber((i + 1).ToString(), arr[i]));
-                }
-                else
-                {
-                    SongList.Add(new SongAndNumber((i + 1).ToString(), string.Empty));
-                }
-            }
-
-            RaisePropertyChanged("SongList");
-        }
-
         #region Reordering Songs
 
         public void RenumberSongList()
@@ -372,6 +313,92 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Misc
 
+        public void RaisePropAll()
+        {
+            RaisePropertyChanged("AlbumName");
+            RaisePropertyChanged("ArtistName");
+            RaisePropertyChanged("SongList");
+            RaisePropertyChanged("ArtistList");
+            RaisePropertyChanged("AlbumList");
+            RaisePropertyChanged("ArtistsVisible");
+            RaisePropertyChanged("AlbumsVisible");
+        }
+
+        /// <summary>
+        /// Will not allow the user to close the window manually if information is not filled out for the album
+        /// </summary>
+        /// <returns></returns>
+        public bool CanCloseWindow()
+        {
+            StringBuilder sb = new StringBuilder("Fill in a value for the following\n");
+
+            bool ret = true;
+
+            foreach (SongAndNumber san in SongList)
+            {
+                if (string.IsNullOrWhiteSpace(san.Name))
+                {
+                    sb.Append("Song Number " + san.Number + "\n");
+                    ret = false;
+                }
+            }
+
+            if (SelectedArtist == null)
+            {
+                sb.Append("Artist\n");
+                ret = false;
+            }
+
+            if (SelectedAlbum == null)
+            {
+                sb.Append("Album\n");
+                ret = false;
+            }
+
+            if (SongList.Count != _numberOfSongs)
+            {
+                sb.Append("Need " + _numberOfSongs + " tracks\n");
+                ret = false;
+            }
+
+            if (!ret)
+            {
+                MessageBox.Show(sb.ToString());
+                CanSubmitEntry = false;
+            }
+            else
+            {
+                CanSubmitEntry = true;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Fill the SongList with the arr 
+        /// Fills SongList with amount of _numberOfSongs
+        /// If there is not enough strings in arr then it will add empty strings as the song name
+        /// </summary>
+        /// <param name="arr"></param>
+        public void FillSongList(string[] arr)
+        {
+            SongList.Clear();
+
+            for (int i = 0; i < _numberOfSongs; i++)
+            {
+                if (arr.Count() > i)
+                {
+                    SongList.Add(new SongAndNumber((i + 1).ToString(), arr[i]));
+                }
+                else
+                {
+                    SongList.Add(new SongAndNumber((i + 1).ToString(), string.Empty));
+                }
+            }
+
+            RaisePropertyChanged("SongList");
+        }
+
         public void Browse()
         {
             try
@@ -458,13 +485,41 @@ namespace RecordRemoteClientApp.ViewModel
         {
             try
             {
-                AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = System.IO.File.ReadAllBytes(loc) });
+                AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = System.IO.File.ReadAllBytes(loc), IsUserAdded = true });
             }
             catch (Exception)
             {
                 MessageBox.Show("Select an appropriate file to add", "Error");
             }
 
+        }
+
+        public void RemoveNonUserAddedAlbumArt()
+        {
+            AlbumArtList = new ObservableCollection<AssociationPicture>((
+                from item in AlbumArtList
+                where item.IsUserAdded
+                select item).ToList());
+        }
+
+        public void GoBack()
+        {
+            switch (MethodLevel)
+            {
+                case 2:
+                    AutoList = new ObservableCollection<GenericPictureName>(HoldingArtists);
+                    SelectedArtist = null;
+                    MethodLevel = 1;
+                    RaisePropertyChanged("QueryResult");
+                    break;
+                case 3:
+                    SelectedAlbum = null;
+                    AutoList = new ObservableCollection<GenericPictureName>(HoldingAlbums);
+                    MethodLevel = 2;
+                    RaisePropertyChanged("QueryResult");
+                    RemoveNonUserAddedAlbumArt();
+                    break;
+            }
         }
 
         #endregion
@@ -502,6 +557,7 @@ namespace RecordRemoteClientApp.ViewModel
             HoldingArtists = new List<GenericPictureName>(AutoList);
             MethodLevel = 1;
             RaisePropertyChanged("AutoList");
+            QueryResult = e.Argument.ToString();
         }
 
         /// <summary>
@@ -512,10 +568,15 @@ namespace RecordRemoteClientApp.ViewModel
         private void bwAlbum_DoWork(object sender, DoWorkEventArgs e)
         {
             MethodLevel += 10;
+            if (AutoList != null)
+            {
+                AutoList.Clear();
+            }
             AutoList = new ObservableCollection<GenericPictureName>(LastFMLookup.AlbumQuery(SelectedArtist.Name));
             HoldingAlbums = new List<GenericPictureName>(AutoList);
             MethodLevel = 2;
             RaisePropertyChanged("AutoList");
+            RaisePropertyChanged("QueryResult");
         }
 
         /// <summary>
@@ -542,6 +603,7 @@ namespace RecordRemoteClientApp.ViewModel
 
             MethodLevel = 3;
             RaisePropertyChanged("SongList");
+            RaisePropertyChanged("QueryResult");
         }
 
         /// <summary>
@@ -570,13 +632,14 @@ namespace RecordRemoteClientApp.ViewModel
             MethodLevel = 2;
             SelectedAlbum = gpn;
             AutoList.Clear();
-            AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = SelectedAlbum.ImgBytes });
-
+            AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = SelectedAlbum.ImgBytes, IsUserAdded = false });
+            ShowAlbumHint = Visibility.Collapsed;
             GetAlbumInfo();
         }
 
         #endregion
 
         #endregion
+
     }
 }

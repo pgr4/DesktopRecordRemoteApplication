@@ -11,6 +11,8 @@ namespace RecordRemoteClientApp.Models
 
         }
 
+        public bool IsUserAdded { get; set; }
+
         private Byte[] sourceBytes;
 
         public Byte[] SourceBytes

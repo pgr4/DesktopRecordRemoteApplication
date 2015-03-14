@@ -22,6 +22,24 @@ namespace RecordRemoteClientApp.Converters
                 return Visibility.Collapsed;
             }
 
+            if ((string)parameter == "Button" && ((int)value == 2 || (int)value == 3))
+            {
+                return Visibility.Visible;
+            }
+            else if ((string)parameter == "Button")
+            {
+                return Visibility.Collapsed;
+            }
+
+            if ((string)parameter == "Label" && (int)value > 0)
+            {
+                return Visibility.Visible;
+            }
+            else if ((string)parameter == "Label")
+            {
+                return Visibility.Collapsed;
+            }
+
             if (int.Parse((string)parameter) == -1 && (int)value >= 10)
             {
                 return Visibility.Visible;

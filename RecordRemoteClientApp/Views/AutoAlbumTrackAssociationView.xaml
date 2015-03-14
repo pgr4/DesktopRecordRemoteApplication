@@ -4,7 +4,7 @@
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
         xmlns:local="clr-namespace:RecordRemoteClientApp.Views"
         x:Class="RecordRemoteClientApp.Views.AutoAlbumTrackAssociationView"
-        Title="AlbumTrackAssociationView" SizeToContent="Height" Width="400"
+        Title="AlbumTrackAssociationView" SizeToContent="WidthAndHeight" MaxWidth="600"
         AllowDrop="True"
         Drop="AlbumTrackAssociationView_OnDrop"
         DragOver="AlbumTrackAssociationView_OnDragOver"
@@ -29,7 +29,31 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" MaxHeight="400">
-            <ListBox x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=3}"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" CornerRadius="25" Width="25" Height="25" Background="White" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=Button}">
+                    <Button Name="BackButton" FontFamily="Segoe UI Symbol" Content="&#xE0D5;" Click="BackButton_OnClick">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type ButtonBase}">
+                                <Border x:Name="border">
+                                    <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Border>
+                <Label Grid.Column="1" Content="{Binding QueryResult}" HorizontalContentAlignment="Center" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=Label}"></Label>
+            </Grid>
+            <ProgressBar Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=-1}" IsIndeterminate="True" Grid.Row="0" Height="25"/>
+
+            <ListBox Grid.Row="1" x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=3}"
                      SelectedItem="{Binding SelectedSongAndNumber, Mode=TwoWay}" SelectionChanged="songListBox_SelectionChanged" Tag="{Binding OperationState, Mode=TwoWay}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
@@ -43,7 +67,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="5"/>
                                 <ColumnDefinition Width="40"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition />
                                 <ColumnDefinition Width="15"/>
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="15"/>
@@ -76,7 +100,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <ListBox x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter}}">
+            <ListBox Grid.Row="1" x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter}}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler"></EventSetter>
@@ -88,15 +112,14 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="5"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{Binding ImgSource}" Grid.Column="0" Stretch="Fill"></Image>
-                            <Label Content="{Binding Name}" VerticalContentAlignment="Center" Grid.Column="2" FontSize="22"></Label>
+                            <Image Source="{Binding ImgSource}" Stretch="Fill" Grid.Column="0"></Image>
+                            <Label Content="{Binding Name}" VerticalContentAlignment="Center" FontSize="22" Grid.Column="2"></Label>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Image Source="http://cdn.flaticon.com/png/256/48306.png" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=-1}"/>
         </Grid>
 
         <Grid Grid.Row="1" MaxHeight="200">
@@ -136,9 +159,9 @@
 
                 <Label VerticalContentAlignment="Center" Content="Artist:" Grid.Column="0"/>
 
-                <TextBox x:Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"/>
+                <TextBox x:Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" KeyUp="SearchTextBox_OnKeyUp"/>
                 <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick">
-                    <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center">GO</Label>
+                    <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Search</Label>
                 </Button>
             </Grid>
 
