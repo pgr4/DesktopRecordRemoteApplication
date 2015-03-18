@@ -242,7 +242,6 @@ namespace RecordRemoteClientApp.Views
                 }
             }
             DragLabel.Visibility = Visibility.Collapsed;
-            vm.ShowAlbumHint = Visibility.Collapsed;
         }
 
         private void AlbumTrackAssociationView_OnDragOver(object sender, DragEventArgs e)
@@ -257,6 +256,29 @@ namespace RecordRemoteClientApp.Views
             var window = (Window)sender;
             window.Opacity = 1;
             DragLabel.Visibility = Visibility.Collapsed;
+        }
+
+        private void BtnSelectMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+            MenuItem mnu = sender as MenuItem;
+            if (mnu != null)
+            {
+                Image sp = ((ContextMenu)mnu.Parent).PlacementTarget as Image;
+                vm.SelectAlbumArt((byte[])sp.Tag);
+            }
+        }
+
+        private void BtnRemoveMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+            MenuItem mnu = sender as MenuItem;
+            if (mnu != null)
+            {
+                Image sp = ((ContextMenu)mnu.Parent).PlacementTarget as Image;
+                vm.RemoveAlbumArt((byte[])sp.Tag);
+            }
+
         }
 
         #endregion
@@ -286,5 +308,6 @@ namespace RecordRemoteClientApp.Views
         }
 
         #endregion
+
     }
 }

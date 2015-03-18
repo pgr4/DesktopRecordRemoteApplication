@@ -38,8 +38,17 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" CornerRadius="25" Width="25" Height="25" Background="White" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=Button}">
-                    <Button Name="BackButton" FontFamily="Segoe UI Symbol" Content="&#xE0D5;" Click="BackButton_OnClick">
+                <Border Grid.Column="0" CornerRadius="25" Width="24" Height="24" Background="White" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=Button}">
+                    <Button Name="BackButton" FontFamily="Segoe UI Symbol" Content="&#xE0D5;" Click="BackButton_OnClick" IsEnabled="{Binding CanGoBack}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value=".5"></Setter>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <Button.Template>
                             <ControlTemplate TargetType="{x:Type ButtonBase}">
                                 <Border x:Name="border">
@@ -134,7 +143,14 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Border BorderThickness="2" BorderBrush="{Binding Selected, Converter={StaticResource BoolToColorConverter}}">
-                                <Image Name="imgArtAlbum" Source="{Binding SourceBytes}" MouseLeftButtonDown="imgArtAlbum_OnMouseLeftButtonDown"></Image>
+                                <Image Name="imgArtAlbum" Source="{Binding SourceBytes}" MouseLeftButtonDown="imgArtAlbum_OnMouseLeftButtonDown" Tag="{Binding SourceBytes}">
+                                    <Image.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Click="BtnSelectMenuItem_OnClick" Header="Select"></MenuItem>
+                                            <MenuItem Click="BtnRemoveMenuItem_OnClick" Header="Remove"></MenuItem>
+                                        </ContextMenu>
+                                    </Image.ContextMenu>
+                                </Image>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

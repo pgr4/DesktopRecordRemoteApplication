@@ -1,6 +1,11 @@
 ﻿using System.Data.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.Models.LastFM;
 using System;
@@ -18,6 +23,7 @@ using System.Drawing.Imaging;
 using System.Net;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
+using System.Linq.Expressions;
 
 namespace RecordRemoteClientApp.ViewModel
 {
@@ -44,32 +50,40 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        private string queryResult;
-
         public string QueryResult
         {
             get
             {
+                if (IsBrowsing)
+                {
+                    return "Showing results from " + FolderPath;
+                }
                 if (SelectedArtist != null && SelectedAlbum != null)
                 {
-                    return "Showing results for " + SelectedArtist.Name + "'s " + SelectedAlbum.Name;
+                    return "Showing Songs for " + SelectedArtist.Name + "'s " + SelectedAlbum.Name;
+                }
+                else if (SelectedArtist == null)
+                {
+                    return "Showing Artists matching " + QueryArtist;
                 }
                 else if (SelectedArtist != null)
                 {
-                    return "Showing Albums for " + SelectedArtist.Name;
+                    return "Showing Albums for " + QueryArtist;
                 }
                 else
                 {
-                    return queryResult;
+                    return "";
                 }
-            }
-            set
-            {
-                queryResult = "Showing artists matching  \"" + value + "\"";
-                RaisePropertyChanged("QueryResult");
             }
         }
 
+        public bool IsBrowsing { get; set; }
+
+        public string FolderPath { get; set; }
+
+        public string QueryArtist { get; set; }
+
+        public bool CanGoBack { get { return (HoldingArtists != null || HoldingArtists != null); } }
 
         private ObservableCollection<GenericPictureName> autoList;
 
@@ -95,15 +109,22 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        private Visibility showAlbumHint;
-
         public Visibility ShowAlbumHint
         {
-            get { return showAlbumHint; }
-            set
+            get
             {
-                showAlbumHint = value;
-                RaisePropertyChanged("ShowAlbumHint");
+                if (AlbumArtList == null)
+                {
+                    return Visibility.Visible;
+                }
+                else if (AlbumArtList.Count == 0)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
             }
         }
 
@@ -199,15 +220,25 @@ namespace RecordRemoteClientApp.ViewModel
 
             CanSubmitEntry = false;
 
+            FolderPath = "";
+
+            QueryArtist = "";
+
+            IsBrowsing = false;
+
             for (int i = 0; i < songCount; i++)
             {
                 SongList.Add(new SongAndNumber() { Name = string.Empty, Number = (i + 1).ToString() });
             }
 
-            ShowAlbumHint = Visibility.Visible;
-
+            RaisePropertyChanged("ShowAlbumHint");
+            RaisePropertyChanged("RemoveCommand"); RaisePropertyChanged("SelectCommand");
             RaisePropAll();
+
+            //CreateSelectCommand();
+            //CreateRemoveCommand();
         }
+
         #endregion
 
         #region Functions
@@ -315,8 +346,6 @@ namespace RecordRemoteClientApp.ViewModel
 
         public void RaisePropAll()
         {
-            RaisePropertyChanged("AlbumName");
-            RaisePropertyChanged("ArtistName");
             RaisePropertyChanged("SongList");
             RaisePropertyChanged("ArtistList");
             RaisePropertyChanged("AlbumList");
@@ -409,7 +438,6 @@ namespace RecordRemoteClientApp.ViewModel
                 {
                     //Clear the binded list
                     SongList.Clear();
-                    AlbumArtList.Clear();
 
                     //Get a list of all the children from the path
                     var mp3List = Directory.GetFiles(x.SelectedPath);
@@ -424,7 +452,7 @@ namespace RecordRemoteClientApp.ViewModel
                         SongList.Add(new SongAndNumber(f.Tag.Track.ToString(), f.Tag.Title));
                         //Grabbing last file's Artist and Album
                         SelectedAlbum = new GenericPictureName(f.Tag.Album);
-                        SelectedArtist = new GenericPictureName(f.Tag.FirstArtist);//Deprecated
+                        SelectedArtist = new GenericPictureName(f.Tag.FirstArtist); //Deprecated
 
                         for (int i = 0; i < f.Tag.Pictures.Count(); i++)
                         {
@@ -450,14 +478,53 @@ namespace RecordRemoteClientApp.ViewModel
 
                     CheckSongListNumbers();
 
-                    RaisePropertyChanged("AlbumName");
-                    RaisePropertyChanged("ArtistName");
+                    FolderPath = x.SelectedPath;
+                    IsBrowsing = true;
+                    MethodLevel = 3;
                     RaisePropertyChanged("SongList");
+                    RaisePropertyChanged("ShowAlbumHint");
+                    RaisePropertyChanged("QueryResult");
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.StackTrace, e.Message);
+            }
+        }
+
+        public void RemoveAlbumArt(byte[] imageBytes)
+        {
+            for (int i = 0; i < AlbumArtList.Count; i++)
+            {
+                if (AlbumArtList[i].SourceBytes.SequenceEqual(imageBytes))
+                {
+                    if (AlbumArtList[i].Selected)
+                    {
+                        AlbumArtList.RemoveAt(i);
+                        if (AlbumArtList.Count != 0)
+                        {
+                            AlbumArtList[0].Selected = true;
+                        }
+                    }
+                    else
+                    {
+                        AlbumArtList.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+            RaisePropertyChanged("ShowAlbumHint");
+        }
+
+        public void SelectAlbumArt(byte[] imageBytes)
+        {
+            foreach (var item in AlbumArtList)
+            {
+                item.Selected = false;
+                if (item.SourceBytes.SequenceEqual(imageBytes))
+                {
+                    item.Selected = true;
+                }
             }
         }
 
@@ -485,13 +552,22 @@ namespace RecordRemoteClientApp.ViewModel
         {
             try
             {
-                AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = System.IO.File.ReadAllBytes(loc), IsUserAdded = true });
+                AlbumArtList.Add(new AssociationPicture()
+                {
+                    Selected = (AlbumArtList.Count == 0),
+                    SourceBytes = System.IO.File.ReadAllBytes(loc),
+                    IsUserAdded = true
+                });
             }
             catch (Exception)
             {
                 MessageBox.Show("Select an appropriate file to add", "Error");
-            }
 
+            }
+            finally
+            {
+                RaisePropertyChanged("ShowAlbumHint");
+            }
         }
 
         public void RemoveNonUserAddedAlbumArt()
@@ -504,21 +580,34 @@ namespace RecordRemoteClientApp.ViewModel
 
         public void GoBack()
         {
-            switch (MethodLevel)
+            if (IsBrowsing)
             {
-                case 2:
-                    AutoList = new ObservableCollection<GenericPictureName>(HoldingArtists);
-                    SelectedArtist = null;
-                    MethodLevel = 1;
-                    RaisePropertyChanged("QueryResult");
-                    break;
-                case 3:
-                    SelectedAlbum = null;
-                    AutoList = new ObservableCollection<GenericPictureName>(HoldingAlbums);
-                    MethodLevel = 2;
-                    RaisePropertyChanged("QueryResult");
-                    RemoveNonUserAddedAlbumArt();
-                    break;
+                IsBrowsing = false;
+                AutoList = new ObservableCollection<GenericPictureName>(HoldingArtists);
+                SelectedArtist = null;
+                SelectedAlbum = null;
+                MethodLevel = 1;
+                RaisePropertyChanged("QueryResult");
+            }
+            else
+            {
+                IsBrowsing = false;
+                switch (MethodLevel)
+                {
+                    case 2:
+                        AutoList = new ObservableCollection<GenericPictureName>(HoldingArtists);
+                        SelectedArtist = null;
+                        MethodLevel = 1;
+                        RaisePropertyChanged("QueryResult");
+                        break;
+                    case 3:
+                        SelectedAlbum = null;
+                        AutoList = new ObservableCollection<GenericPictureName>(HoldingAlbums);
+                        MethodLevel = 2;
+                        RaisePropertyChanged("QueryResult");
+                        RemoveNonUserAddedAlbumArt();
+                        break;
+                }
             }
         }
 
@@ -530,6 +619,7 @@ namespace RecordRemoteClientApp.ViewModel
         {
             if (!_bwArtist.IsBusy)
             {
+                QueryArtist = searchString;
                 _bwArtist.RunWorkerAsync(searchString);
             }
         }
@@ -557,7 +647,7 @@ namespace RecordRemoteClientApp.ViewModel
             HoldingArtists = new List<GenericPictureName>(AutoList);
             MethodLevel = 1;
             RaisePropertyChanged("AutoList");
-            QueryResult = e.Argument.ToString();
+            RaisePropertyChanged("QueryResult");
         }
 
         /// <summary>
@@ -568,10 +658,6 @@ namespace RecordRemoteClientApp.ViewModel
         private void bwAlbum_DoWork(object sender, DoWorkEventArgs e)
         {
             MethodLevel += 10;
-            if (AutoList != null)
-            {
-                AutoList.Clear();
-            }
             AutoList = new ObservableCollection<GenericPictureName>(LastFMLookup.AlbumQuery(SelectedArtist.Name));
             HoldingAlbums = new List<GenericPictureName>(AutoList);
             MethodLevel = 2;
@@ -633,13 +719,17 @@ namespace RecordRemoteClientApp.ViewModel
             SelectedAlbum = gpn;
             AutoList.Clear();
             AlbumArtList.Add(new AssociationPicture() { Selected = (AlbumArtList.Count == 0), SourceBytes = SelectedAlbum.ImgBytes, IsUserAdded = false });
-            ShowAlbumHint = Visibility.Collapsed;
+            RaisePropertyChanged("ShowAlbumHint");
             GetAlbumInfo();
         }
 
         #endregion
 
         #endregion
+
+        public void te()
+        {
+        }
 
     }
 }
