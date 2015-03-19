@@ -18,6 +18,7 @@ namespace RecordRemoteClientApp.Enumerations
         GetPower,
         SwitchPowerOn,
         SwitchPowerOff,
+        PositionUpdate,
 
         PowerUnknown = 14,
         On = 15,
@@ -30,8 +31,6 @@ namespace RecordRemoteClientApp.Enumerations
         Pause = 24,
         Stop = 25,
         sScan = 26
-
-
     }
 
     public enum PowerStatus

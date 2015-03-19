@@ -235,6 +235,7 @@ namespace RecordRemoteClientApp.ViewModel
             DataListener.SetPowerStatus += DataListener_SetPowerStatus;
             DataListener.SetBusyStatus += DataListener_SetBusyStatus;
             DataListener.SyncMessage += DataListener_SyncMessage;
+            DataListener.EventPositionUpdate +=DataListener_EventPositionUpdate;
 
             PowerType = PowerStatus.Unknown;
             BusyType = BusyStatus.Unknown;
@@ -473,6 +474,21 @@ namespace RecordRemoteClientApp.ViewModel
         {
             PowerType = ps;
             PStatus = ps.ToString();
+        }
+
+        private void DataListener_EventPositionUpdate(byte b)
+        {
+            ////We reached the end of the album
+            //if (b == endingNumber)
+            //{ 
+            //    CurrentSong = null
+            //}
+
+            ////Update the CurrentSong
+            //CurrentSong = (from item in SongList
+            // where item.Position == b
+            // select item).FirstOrDefault();
+            
         }
 
         #endregion

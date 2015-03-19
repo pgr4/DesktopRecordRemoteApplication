@@ -59,6 +59,9 @@ namespace RecordRemoteClientApp.Data
         public delegate void PowerStatusEvent(PowerStatus bs);
         public event PowerStatusEvent SetPowerStatus;
 
+        public delegate void PositionUpdateEvent(byte b);
+        public event PositionUpdateEvent EventPositionUpdate;
+
         #endregion
 
         public void Speak()
@@ -144,6 +147,12 @@ namespace RecordRemoteClientApp.Data
                                         PowerStatusType = ps;
                                         SetPowerStatus(ps);
                                     }
+                                }
+                                break;
+                            case MessageCommand.PositionUpdate:
+                                if (EventPositionUpdate != null)
+                                {
+                                    EventPositionUpdate(MessageParser.GetByte(bytes, ref pointer));
                                 }
                                 break;
                             default:
