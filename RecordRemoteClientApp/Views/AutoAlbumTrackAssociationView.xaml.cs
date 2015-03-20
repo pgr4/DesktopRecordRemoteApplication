@@ -29,10 +29,10 @@ namespace RecordRemoteClientApp.Views
             InitializeComponent();
         }
 
-        public AutoAlbumTrackAssociationView(int songCount)
+        public AutoAlbumTrackAssociationView(NewAlbum na)
         {
             InitializeComponent();
-            DataContext = new AutoAlbumTrackAssociationViewModel(songCount);
+            DataContext = new AutoAlbumTrackAssociationViewModel(na);
         }
 
         #endregion

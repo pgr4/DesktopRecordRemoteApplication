@@ -17,5 +17,9 @@ namespace RecordRemoteClientApp.Models
         public string Album { get; set; }
         [Column(Name = "Break_Number")]
         public int Break_Number { get; set; }
+        [Column(Name = "Break_Location_Start")]
+        public int Break_Location_Start { get; set; }
+        [Column(Name = "Break_Location_End")]
+        public int Break_Location_End { get; set; }
     }
 }

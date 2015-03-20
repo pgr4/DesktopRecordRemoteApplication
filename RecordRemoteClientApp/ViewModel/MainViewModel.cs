@@ -235,7 +235,7 @@ namespace RecordRemoteClientApp.ViewModel
             DataListener.SetPowerStatus += DataListener_SetPowerStatus;
             DataListener.SetBusyStatus += DataListener_SetBusyStatus;
             DataListener.SyncMessage += DataListener_SyncMessage;
-            DataListener.EventPositionUpdate +=DataListener_EventPositionUpdate;
+            DataListener.EventPositionUpdate += DataListener_EventPositionUpdate;
 
             PowerType = PowerStatus.Unknown;
             BusyType = BusyStatus.Unknown;
@@ -287,7 +287,7 @@ namespace RecordRemoteClientApp.ViewModel
                 SQLiteCommand command;
 
                 //CREATE TABLES
-                sql = "CREATE TABLE tblSong (Id integer primary key, Key blob, Title text, Artist text, Album text, Break_Number integer)";
+                sql = "CREATE TABLE tblSong (Id integer primary key, Key blob, Title text, Artist text, Album text, Break_Number integer, Break_Location_Start integer, Break_Location_End integer)";
                 command = new SQLiteCommand(sql, dbConnection);
                 command.ExecuteNonQuery();
 
@@ -332,14 +332,14 @@ namespace RecordRemoteClientApp.ViewModel
             command.ExecuteNonQuery();
         }
 
-        private void AddSongToDatabase(byte[] key, string title, string artist, string album, int breaknum)
+        private void AddSongToDatabase(byte[] key, string title, string artist, string album, int breakNum, int breakLocStart, int breakLocEnd)
         {
             string sql;
             SQLiteCommand command;
             title = title.Replace("'", "''");
             artist = artist.Replace("'", "''");
             album = album.Replace("'", "''");
-            sql = "insert into tblSong (Key, Title, Artist, Album, Break_Number) values (@Key,'" + title + "','" + artist + "','" + album + "','" + breaknum + "')";
+            sql = "insert into tblSong (Key, Title, Artist, Album, Break_Number, Break_Location_Start, Break_Location_End) values (@Key,'" + title + "','" + artist + "','" + album + "','" + breakNum + "','" + breakLocStart + "','" + breakLocEnd + "')";
             command = new SQLiteCommand(sql, dbConnection);
             command.Parameters.Add("@Key", DbType.Binary).Value = key;
             command.ExecuteNonQuery();
@@ -411,24 +411,26 @@ namespace RecordRemoteClientApp.ViewModel
             //Must accept the event by user in order to be put in database
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
-                AutoAlbumTrackAssociationView ATAssocView = new AutoAlbumTrackAssociationView(na.Breaks);
+                AutoAlbumTrackAssociationView ATAssocView = new AutoAlbumTrackAssociationView(na);
                 ATAssocView.Show();
 
                 ATAssocView.Closed += delegate
                 {
-                    if (((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).CanSubmitEntry)
+                    AutoAlbumTrackAssociationViewModel vm = ATAssocView.DataContext as AutoAlbumTrackAssociationViewModel;
+                    if (vm.CanSubmitEntry)
                     {
                         int i = 0;
 
                         //Go through all the songs in the Association View and add them to the database
-                        foreach (SongAndNumber sn in ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SongList)
+                        foreach (SongAndNumber sn in (vm.SongList))
                         {
-                            //AddSongToDatabase(na.Key, sn.Name, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, i++);
+                            AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
+                               vm.SelectedAlbum.Name, i++,
+                                Convert.ToInt32(na.Key[i]), (na.Key.Length == i + 1 ? int.MaxValue : Convert.ToInt32(na.Key[i + 1])));
                         }
 
                         //Add the album to the database
-                       // AddAlbumToDatabase(na.Key, ((AlbumTrackAssociationViewModel)ATAssocView.DataContext).AlbumName, ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).ArtistName, true, na.Breaks,
-                          //  ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum == null ? default_albumart : ((AutoAlbumTrackAssociationViewModel)ATAssocView.DataContext).SelectedAlbum.Image);
+                        AddAlbumToDatabase(na.Key, vm.SelectedAlbum.Name, vm.SelectedArtist.Name, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
 
                         RefreshCurrentSongList(na.Key);
 
@@ -440,6 +442,22 @@ namespace RecordRemoteClientApp.ViewModel
                     }
                 };
             });
+        }
+
+        private byte[] GetAlbumArt(List<AssociationPicture> ls)
+        {
+            var item = (from i in ls
+                        where i.Selected == true
+                        select i).FirstOrDefault();
+
+            if (item == null)
+            {
+                return default_albumart;
+            }
+            else
+            {
+                return item.SourceBytes;
+            }
         }
 
         private void DataListener_SyncMessage(byte[] key)
@@ -488,7 +506,7 @@ namespace RecordRemoteClientApp.ViewModel
             //CurrentSong = (from item in SongList
             // where item.Position == b
             // select item).FirstOrDefault();
-            
+
         }
 
         #endregion
@@ -526,11 +544,6 @@ namespace RecordRemoteClientApp.ViewModel
             {
                 CurrentSongList.Add(new Song(item));
             }
-
-            ///TODO:WHAT???
-            songs = (from item in dbSongs
-                     where item.Key == b
-                     select item).ToList();
 
             //SQLITE DOESN'T LIKE FIRSTORDEFAULT
             var albums = (from a in dbAlbums

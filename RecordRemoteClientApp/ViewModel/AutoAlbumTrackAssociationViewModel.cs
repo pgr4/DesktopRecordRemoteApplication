@@ -128,6 +128,7 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        private byte[] _key { get; set; }
         private int _numberOfSongs { get; set; }
 
         private BackgroundWorker _bwArtist;
@@ -191,7 +192,7 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Constructors
 
-        public AutoAlbumTrackAssociationViewModel(int songCount)
+        public AutoAlbumTrackAssociationViewModel(NewAlbum na)
         {
             MethodLevel = 0;
 
@@ -204,7 +205,8 @@ namespace RecordRemoteClientApp.ViewModel
             _bwAlbumInfo = new BackgroundWorker();
             _bwAlbumInfo.DoWork += bwAlbumInfo_DoWork;
 
-            _numberOfSongs = songCount;
+            _numberOfSongs = na.Breaks;
+            _key = na.Key;
 
             SongList = new ObservableCollection<SongAndNumber>();
             AlbumArtList = new ObservableCollection<AssociationPicture>();
@@ -226,17 +228,13 @@ namespace RecordRemoteClientApp.ViewModel
 
             IsBrowsing = false;
 
-            for (int i = 0; i < songCount; i++)
+            for (int i = 0; i < _numberOfSongs; i++)
             {
                 SongList.Add(new SongAndNumber() { Name = string.Empty, Number = (i + 1).ToString() });
             }
 
             RaisePropertyChanged("ShowAlbumHint");
-            RaisePropertyChanged("RemoveCommand"); RaisePropertyChanged("SelectCommand");
             RaisePropAll();
-
-            //CreateSelectCommand();
-            //CreateRemoveCommand();
         }
 
         #endregion
@@ -726,10 +724,6 @@ namespace RecordRemoteClientApp.ViewModel
         #endregion
 
         #endregion
-
-        public void te()
-        {
-        }
 
     }
 }
