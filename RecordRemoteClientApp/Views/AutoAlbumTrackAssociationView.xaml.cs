@@ -65,6 +65,14 @@ namespace RecordRemoteClientApp.Views
             vm.GetArtists(SearchTextBox.Text);
         }
 
+
+        private void SwitchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as AutoAlbumTrackAssociationViewModel;
+            
+            vm.ChangeType();
+        }
+
         /// <summary>
         /// If the user presses enter in the search text box then search 
         /// </summary>

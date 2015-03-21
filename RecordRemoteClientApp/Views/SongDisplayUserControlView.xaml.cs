@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using RecordRemoteClientApp.ViewModel;
 
 namespace RecordRemoteClientApp.Views
 {
@@ -26,24 +27,28 @@ namespace RecordRemoteClientApp.Views
             InitializeComponent();
         }
 
-
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void RewindButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var source = new BitmapImage();
-            source.BeginInit();
-            source.StreamSource = new MemoryStream(File.ReadAllBytes(@"../../Images/ionicons-1.5.2/png/512/ios7-rewind-white.png"));
-            source.EndInit();
-            RewindImage.Source = source;
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.Rewind();
         }
 
-        private void UIElement_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void PauseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var source = new BitmapImage();
-            source.BeginInit();
-            source.StreamSource = new MemoryStream(File.ReadAllBytes(@"../../Images/ionicons-1.5.2/png/512/ios7-rewind-outline-white.png"));
-            source.EndInit();
-            RewindImage.Source = source;
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.Pause();
+        }
+
+        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.Play();
+        }
+
+        private void SkipButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.Skip();
         }
     }
 }

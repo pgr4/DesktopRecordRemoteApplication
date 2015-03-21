@@ -59,7 +59,7 @@ namespace RecordRemoteClientApp.Data
         public delegate void PowerStatusEvent(PowerStatus bs);
         public event PowerStatusEvent SetPowerStatus;
 
-        public delegate void PositionUpdateEvent(byte b);
+        public delegate void PositionUpdateEvent(byte? b);
         public event PositionUpdateEvent EventPositionUpdate;
 
         #endregion
@@ -134,6 +134,12 @@ namespace RecordRemoteClientApp.Data
                                 break;
                             case MessageCommand.SwitchPowerOn:
                             case MessageCommand.SwitchPowerOff:
+                            case MessageCommand.MediaGoToBeginning:
+                            case MessageCommand.MediaSkip:
+                            case MessageCommand.MediaGoToTrack:
+                            case MessageCommand.MediaPlay:
+                            case MessageCommand.MediaStop:
+                            case MessageCommand.MediaRewind:
                                 //Ignore
                                 break;
                             case MessageCommand.On:
@@ -153,6 +159,12 @@ namespace RecordRemoteClientApp.Data
                                 if (EventPositionUpdate != null)
                                 {
                                     EventPositionUpdate(MessageParser.GetByte(bytes, ref pointer));
+                                }
+                                break;
+                            case MessageCommand.AtBeginning:
+                                if (EventPositionUpdate != null)
+                                {
+                                    EventPositionUpdate(null);
                                 }
                                 break;
                             default:

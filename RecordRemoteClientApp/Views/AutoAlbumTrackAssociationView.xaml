@@ -12,6 +12,7 @@
 
     <Grid>
         <Grid.Resources>
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <conv:VisibilityConverter x:Key="B2V"/>
             <conv:ButtonTextConverter x:Key="ButtonConverter"/>
             <conv:BoolToColorConverter x:Key="BoolToColorConverter"></conv:BoolToColorConverter>
@@ -165,18 +166,26 @@
                 <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Name="TextGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="{Binding ArtistWidthType}"/>
                     <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="{Binding AlbumWidthType}"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Label VerticalContentAlignment="Center" Content="Artist:" Grid.Column="0"/>
 
-                <TextBox x:Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" KeyUp="SearchTextBox_OnKeyUp"/>
-                <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick">
+                <TextBox Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" KeyUp="SearchTextBox_OnKeyUp"/>
+
+                <Label VerticalContentAlignment="Center" Content="Album:" Grid.Column="4" Width="50" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <TextBox Name="SearchTextBox1" VerticalContentAlignment="Center" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter}}" 
+                         Text="{Binding AlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="5"/>
+
+                <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter=1}" Width="50">
                     <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Search</Label>
                 </Button>
             </Grid>
@@ -190,9 +199,12 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="5"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1" Click="OKButton_Click" Content="OK"/>
             <Button Grid.Column="3" Click="BrowseButton_Click" Content="Browse"/>
+            <Button Grid.Column="5" Click="SwitchButton_Click" Content="{Binding SwitchText}"/>
         </Grid>
 
         <Label Name="DragLabel" Grid.Row="0" Grid.RowSpan="5" Content="Drag in image files" Foreground="Gray" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Visibility="Collapsed"></Label>

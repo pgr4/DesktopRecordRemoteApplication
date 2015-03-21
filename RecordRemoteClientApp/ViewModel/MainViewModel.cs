@@ -37,6 +37,30 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Public Members
 
+        private Song selectedSong;
+
+        public Song SelectedSong
+        {
+            get { return selectedSong; }
+            set
+            {
+                selectedSong = value;
+                RaisePropertyChanged("SelectedSong");
+            }
+        }
+
+        private bool isPlaying;
+
+        public bool IsPlaying
+        {
+            get { return isPlaying; }
+            set
+            {
+                isPlaying = value;
+                RaisePropertyChanged("IsPlaying");
+            }
+        }
+
         private bool powerEnable;
 
         public bool PowerEnable
@@ -48,7 +72,6 @@ namespace RecordRemoteClientApp.ViewModel
                 RaisePropertyChanged("PowerEnable");
             }
         }
-
 
         private BusyStatus busyType;
 
@@ -253,6 +276,8 @@ namespace RecordRemoteClientApp.ViewModel
 
             Sender.SendGenericMessage(MessageCommand.Status);
             Sender.SendGenericMessage(MessageCommand.GetPower);
+
+            IsPlaying = false;
         }
 
         #endregion
@@ -420,13 +445,34 @@ namespace RecordRemoteClientApp.ViewModel
                     if (vm.CanSubmitEntry)
                     {
                         int i = 0;
-
-                        //Go through all the songs in the Association View and add them to the database
-                        foreach (SongAndNumber sn in (vm.SongList))
+                        if (vm.IsManual)
                         {
-                            AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
-                               vm.SelectedAlbum.Name, i++,
-                                Convert.ToInt32(na.Key[i]), (na.Key.Length == i + 1 ? int.MaxValue : Convert.ToInt32(na.Key[i + 1])));
+                        }
+                        else
+                        {
+                            //Go through all the songs in the Association View and add them to the database
+                            foreach (SongAndNumber sn in (vm.SongList))
+                            {
+                                if (i == 0)
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
+                                        vm.SelectedAlbum.Name, i + 1, int.MinValue, Convert.ToInt32(na.Key[0]));
+                                }
+                                else if (i == vm.SongList.Count)
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
+                                        vm.SelectedAlbum.Name, i + 1, Convert.ToInt32(na.Key[na.Key.Length - 1]),
+                                        int.MaxValue);
+                                }
+                                else
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
+                                        vm.SelectedAlbum.Name, i + 1, Convert.ToInt32(na.Key[i - 1]),
+                                        Convert.ToInt32(na.Key[i]));
+                                }
+
+                                i++;
+                            }
                         }
 
                         //Add the album to the database
@@ -494,24 +540,86 @@ namespace RecordRemoteClientApp.ViewModel
             PStatus = ps.ToString();
         }
 
-        private void DataListener_EventPositionUpdate(byte b)
+        private void DataListener_EventPositionUpdate(byte? b)
         {
-            ////We reached the end of the album
-            //if (b == endingNumber)
-            //{ 
-            //    CurrentSong = null
-            //}
-
-            ////Update the CurrentSong
-            //CurrentSong = (from item in SongList
-            // where item.Position == b
-            // select item).FirstOrDefault();
-
+            if (b == null)
+            {
+                if (SongList.Count > 0)
+                {
+                    CurrentSong = SongList[0];
+                }
+            }
+            else
+            {
+                var item = (from i in SongList
+                            where Convert.ToInt32(b.Value) == i.BreakLocationStart
+                            select i).FirstOrDefault();
+                CurrentSong = item;
+            }
         }
 
         #endregion
 
         #region Public Functions
+
+        #region Media Controls
+
+        public void Play()
+        {
+            if (SelectedSong != null)
+            {
+                Sender.PlayMessage(SelectedSong);
+                IsPlaying = true;
+            }
+        }
+
+        public void Pause()
+        {
+            Sender.SendGenericMessage(MessageCommand.MediaStop);
+            IsPlaying = false;
+        }
+
+        public void Skip()
+        {
+            if (CurrentSong != null)
+            {
+                var skipSong = (from item in CurrentSongList
+                                where item.BreakLocationEnd == CurrentSong.BreakLocationStart
+                                select item).FirstOrDefault();
+
+                if (skipSong != null)
+                {
+                    Sender.SendSkipMessage(skipSong);
+                }
+                else
+                {
+                    Sender.SendGenericMessage(MessageCommand.MediaGoToBeginning);
+                }
+            }
+        }
+
+        public void Rewind()
+        {
+            if (CurrentSong != null)
+            {
+                var rewindSong = (from item in CurrentSongList
+                                  where item.BreakLocationStart == CurrentSong.BreakLocationEnd
+                                  select item).FirstOrDefault();
+
+                if (rewindSong != null)
+                {
+                    Sender.SendRewindMessage(rewindSong);
+                }
+                else
+                {
+                    Sender.SendGenericMessage(MessageCommand.MediaGoToBeginning);
+                }
+            }
+        }
+
+        #endregion
+
+        #region misc
 
         /// <summary>
         /// Show all the songs from the database on startup
@@ -586,5 +694,6 @@ namespace RecordRemoteClientApp.ViewModel
 
         #endregion
 
+        #endregion
     }
 }

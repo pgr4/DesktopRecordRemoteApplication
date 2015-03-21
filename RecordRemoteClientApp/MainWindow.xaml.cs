@@ -28,26 +28,6 @@ namespace RecordRemoteClientApp
             }
         }
 
-        private void btnForward_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnBack_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnPlay_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnStop_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
             Sender.SendScanMessage();

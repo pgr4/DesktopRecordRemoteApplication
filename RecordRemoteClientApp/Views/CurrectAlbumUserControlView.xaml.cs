@@ -22,60 +22,50 @@ namespace RecordRemoteClientApp.Views
     /// </summary>
     public partial class CurrectAlbumUserControlView : UserControl
     {
+        Point startPoint;
+        private bool isDown = false;
+
         public CurrectAlbumUserControlView()
         {
             InitializeComponent();
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            MainViewModel vm = DataContext as MainViewModel;
-
-            TextBox txtBox = (TextBox)sender;
-            Song s = (Song)txtBox.Tag;
-
-            vm.UpdateSongDatabase(s);
-        }
-
-        private void ListViewDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        Point startPoint;
-
         private void ListViewItemLeftClick(object sender, MouseButtonEventArgs e)
         {
             // Store the mouse position
-            startPoint = e.GetPosition(null);
+            startPoint = e.GetPosition(null); 
+            isDown = true;
+        }
+
+        private void ListViewItemLeftUpClick(object sender, MouseButtonEventArgs e)
+        {
+            isDown = false;
         }
 
         private void ListViewItemMouseMove(object sender, MouseEventArgs e)
         {
-            // Get the current mouse position
-            Point mousePos = e.GetPosition(null);
-            Vector diff = startPoint - mousePos;
-
-            if (e.LeftButton == MouseButtonState.Pressed &&
-                Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
-                Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
+            if (isDown)
             {
-                // Get the dragged ListViewItem
-                ListView listView = sender as ListView;
-                ListViewItem listViewItem =
-                    FindAnchestor<ListViewItem>((DependencyObject)e.OriginalSource);
+                // Get the current mouse position
+                Point mousePos = e.GetPosition(null);
+                Vector diff = startPoint - mousePos;
 
-                // Find the data behind the ListViewItem
-                Song song = (Song)listViewItem.Tag;
+                if (e.LeftButton == MouseButtonState.Pressed &&
+                    Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                    Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    // Get the dragged ListViewItem
+                    ListView listView = sender as ListView;
+                    ListViewItem listViewItem =
+                        FindAnchestor<ListViewItem>((DependencyObject) e.OriginalSource);
 
-                // Initialize the drag & drop operation
-                DataObject dragData = new DataObject("Song", song);
-                DragDrop.DoDragDrop(listViewItem, dragData, DragDropEffects.Move);
+                    // Find the data behind the ListViewItem
+                    Song song = (Song) listViewItem.Tag;
+
+                    // Initialize the drag & drop operation
+                    DataObject dragData = new DataObject("Song", song);
+                    DragDrop.DoDragDrop(listViewItem, dragData, DragDropEffects.Move);
+                }
             }
         }
 

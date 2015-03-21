@@ -19,18 +19,26 @@ namespace RecordRemoteClientApp.Enumerations
         SwitchPowerOn,
         SwitchPowerOff,
         PositionUpdate,
+        AtBeginning,
 
         PowerUnknown = 14,
         On = 15,
         Off = 16,
-       
+
         Unknown = 20,
         Ready = 21,
         Play = 22,
         GoToTrack = 23,
         Pause = 24,
         Stop = 25,
-        sScan = 26
+        sScan = 26,
+
+        MediaGoToTrack = 30,
+        MediaPlay = 31,
+        MediaStop = 32,
+        MediaRewind = 33,
+        MediaSkip = 34,
+        MediaGoToBeginning = 35
     }
 
     public enum PowerStatus

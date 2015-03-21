@@ -13,6 +13,11 @@ namespace RecordRemoteClientApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (int.Parse((string)parameter) == 3 && (int)value == 50)
+            {
+                return Visibility.Visible;
+            }
+
             if (parameter == null && ((int)value == 1 || (int)value == 2))
             {
                 return Visibility.Visible;

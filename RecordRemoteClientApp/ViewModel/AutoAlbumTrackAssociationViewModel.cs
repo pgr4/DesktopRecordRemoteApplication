@@ -31,6 +31,30 @@ namespace RecordRemoteClientApp.ViewModel
     {
         #region Members
 
+        private GridLength artistWidthType;
+
+        public GridLength ArtistWidthType
+        {
+            get { return artistWidthType; }
+            set
+            {
+                artistWidthType = value;
+                RaisePropertyChanged("ArtistWidthType");
+            }
+        }
+
+        private GridLength albumWidthType;
+
+        public GridLength AlbumWidthType
+        {
+            get { return albumWidthType; }
+            set
+            {
+                albumWidthType = value; 
+                RaisePropertyChanged("AlbumWidthType");
+            }
+        }
+        
         /// <summary>
         /// 0: Initial
         /// 1: Artists Displayed
@@ -97,6 +121,30 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        private string switchText;
+
+        public string SwitchText
+        {
+            get { return switchText; }
+            set
+            {
+                switchText = value; 
+                RaisePropertyChanged("SwitchText");
+            }
+        }
+
+        private bool isManual;
+
+        public bool IsManual
+        {
+            get { return isManual; }
+            set
+            {
+                isManual = value;
+                RaisePropertyChanged("IsManual");
+            }
+        }
+
         private bool isAutoFill;
 
         public bool IsAutoFill
@@ -127,6 +175,8 @@ namespace RecordRemoteClientApp.ViewModel
                 }
             }
         }
+
+        private int SavedMethodLevel { get; set; }
 
         private byte[] _key { get; set; }
         private int _numberOfSongs { get; set; }
@@ -195,6 +245,7 @@ namespace RecordRemoteClientApp.ViewModel
         public AutoAlbumTrackAssociationViewModel(NewAlbum na)
         {
             MethodLevel = 0;
+            SavedMethodLevel = 0;
 
             _bwArtist = new BackgroundWorker();
             _bwArtist.DoWork += bwArtist_DoWork;
@@ -232,6 +283,12 @@ namespace RecordRemoteClientApp.ViewModel
             {
                 SongList.Add(new SongAndNumber() { Name = string.Empty, Number = (i + 1).ToString() });
             }
+
+            IsManual = false;
+            SwitchText = "Switch to Manual";
+
+            ArtistWidthType = new GridLength(1,GridUnitType.Star);
+            AlbumWidthType = new GridLength(1,GridUnitType.Auto);
 
             RaisePropertyChanged("ShowAlbumHint");
             RaisePropAll();
@@ -341,6 +398,24 @@ namespace RecordRemoteClientApp.ViewModel
         #endregion
 
         #region Misc
+
+        public void ChangeType()
+        {
+            IsManual = !IsManual;
+            if (IsManual)
+            {
+                SwitchText = "Switch to Automatic";
+                AlbumWidthType = new GridLength(1, GridUnitType.Star);
+                SavedMethodLevel = MethodLevel;
+                MethodLevel = 50;
+            }
+            else
+            {
+                SwitchText = "Switch to Manual"; 
+                AlbumWidthType = new GridLength(1, GridUnitType.Auto);
+                MethodLevel = SavedMethodLevel;
+            }
+        }
 
         public void RaisePropAll()
         {
@@ -724,6 +799,5 @@ namespace RecordRemoteClientApp.ViewModel
         #endregion
 
         #endregion
-
     }
 }
