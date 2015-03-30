@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:vws="clr-namespace:RecordRemoteClientApp.Views"
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
-        Title="MainWindow" WindowState="Maximized" Closing="Window_Closing">
+        Title="Digital Record Player Remote" WindowState="Maximized" Closing="Window_Closing">
 
     <Window.DataContext>
         <vm:MainViewModel></vm:MainViewModel>
@@ -55,10 +55,12 @@
         <Grid Name="MenuGrid" Grid.Row="0" Grid.ColumnSpan="7">
             <Menu Name="MainMenu">
                 <MenuItem Header="File">
-
+                    <MenuItem Header="Settings"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Help">
-
+                    <MenuItem Header="About"></MenuItem>
                 </MenuItem>
             </Menu>
         </Grid>

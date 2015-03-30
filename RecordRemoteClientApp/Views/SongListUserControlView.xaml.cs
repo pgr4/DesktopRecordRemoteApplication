@@ -29,7 +29,7 @@ namespace RecordRemoteClientApp.Views
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-        
+
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -43,9 +43,15 @@ namespace RecordRemoteClientApp.Views
         }
 
         private void ListViewDoubleClick(object sender, MouseButtonEventArgs e)
-        { 
-        
+        {
+
         }
 
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem cm = (MenuItem)sender;
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.SetCurrentAlbum(cm.DataContext as Song);
+        }
     }
 }

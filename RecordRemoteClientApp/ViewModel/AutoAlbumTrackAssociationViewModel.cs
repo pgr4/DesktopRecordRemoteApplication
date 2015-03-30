@@ -31,6 +31,9 @@ namespace RecordRemoteClientApp.ViewModel
     {
         #region Members
 
+        public string ManualAlbumName { get; set; }
+        public string ManualArtistName { get; set; }
+
         private GridLength artistWidthType;
 
         public GridLength ArtistWidthType
@@ -50,11 +53,11 @@ namespace RecordRemoteClientApp.ViewModel
             get { return albumWidthType; }
             set
             {
-                albumWidthType = value; 
+                albumWidthType = value;
                 RaisePropertyChanged("AlbumWidthType");
             }
         }
-        
+
         /// <summary>
         /// 0: Initial
         /// 1: Artists Displayed
@@ -128,7 +131,7 @@ namespace RecordRemoteClientApp.ViewModel
             get { return switchText; }
             set
             {
-                switchText = value; 
+                switchText = value;
                 RaisePropertyChanged("SwitchText");
             }
         }
@@ -256,7 +259,7 @@ namespace RecordRemoteClientApp.ViewModel
             _bwAlbumInfo = new BackgroundWorker();
             _bwAlbumInfo.DoWork += bwAlbumInfo_DoWork;
 
-            _numberOfSongs = na.Breaks;
+            _numberOfSongs = na.Breaks + 1;
             _key = na.Key;
 
             SongList = new ObservableCollection<SongAndNumber>();
@@ -281,14 +284,14 @@ namespace RecordRemoteClientApp.ViewModel
 
             for (int i = 0; i < _numberOfSongs; i++)
             {
-                SongList.Add(new SongAndNumber() { Name = string.Empty, Number = (i + 1).ToString() });
+                SongList.Add(new SongAndNumber() { Name = "Track " + (i + 1), Number = (i + 1).ToString() });
             }
 
             IsManual = false;
             SwitchText = "Switch to Manual";
 
-            ArtistWidthType = new GridLength(1,GridUnitType.Star);
-            AlbumWidthType = new GridLength(1,GridUnitType.Auto);
+            ArtistWidthType = new GridLength(1, GridUnitType.Star);
+            AlbumWidthType = new GridLength(1, GridUnitType.Auto);
 
             RaisePropertyChanged("ShowAlbumHint");
             RaisePropAll();
@@ -411,7 +414,7 @@ namespace RecordRemoteClientApp.ViewModel
             }
             else
             {
-                SwitchText = "Switch to Manual"; 
+                SwitchText = "Switch to Manual";
                 AlbumWidthType = new GridLength(1, GridUnitType.Auto);
                 MethodLevel = SavedMethodLevel;
             }
@@ -444,17 +447,33 @@ namespace RecordRemoteClientApp.ViewModel
                     ret = false;
                 }
             }
-
-            if (SelectedArtist == null)
+            if (!isManual)
             {
-                sb.Append("Artist\n");
-                ret = false;
+                if (SelectedArtist == null)
+                {
+                    sb.Append("Artist\n");
+                    ret = false;
+                }
+
+                if (SelectedAlbum == null)
+                {
+                    sb.Append("Album\n");
+                    ret = false;
+                }
             }
-
-            if (SelectedAlbum == null)
+            else
             {
-                sb.Append("Album\n");
-                ret = false;
+                if (string.IsNullOrWhiteSpace(ManualArtistName))
+                {
+                    sb.Append("Artist\n");
+                    ret = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(ManualAlbumName))
+                {
+                    sb.Append("Album\n");
+                    ret = false;
+                }
             }
 
             if (SongList.Count != _numberOfSongs)

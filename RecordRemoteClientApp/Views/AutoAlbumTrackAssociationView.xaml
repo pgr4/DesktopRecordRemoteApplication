@@ -4,7 +4,7 @@
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
         xmlns:local="clr-namespace:RecordRemoteClientApp.Views"
         x:Class="RecordRemoteClientApp.Views.AutoAlbumTrackAssociationView"
-        Title="AlbumTrackAssociationView" SizeToContent="WidthAndHeight" MaxWidth="600"
+        Title="Identify New Album" SizeToContent="WidthAndHeight" MaxWidth="600"
         AllowDrop="True"
         Drop="AlbumTrackAssociationView_OnDrop"
         DragOver="AlbumTrackAssociationView_OnDragOver"
@@ -30,10 +30,12 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" MaxHeight="400">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
+
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -61,6 +63,7 @@
                 </Border>
                 <Label Grid.Column="1" Content="{Binding QueryResult}" HorizontalContentAlignment="Center" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=Label}"></Label>
             </Grid>
+
             <ProgressBar Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=-1}" IsIndeterminate="True" Grid.Row="0" Height="25"/>
 
             <ListBox Grid.Row="1" x:Name="songListBox" KeyboardNavigation.TabNavigation="Continue"  ItemsSource="{Binding SongList, Mode=TwoWay}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter},ConverterParameter=3}"
@@ -69,6 +72,37 @@
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                         <Setter Property="IsTabStop" Value="False"></Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Name="Border" Padding="2" SnapsToDevicePixels="true" Background="LightGray">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <Setter Property="Background" Value="Transparent" TargetName="Border"/>
+                                        </Trigger>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="Gray" TargetName="Border"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" TargetName="Border">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="Aqua"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" TargetName="Border">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="Aqua" Opacity="0.25"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
@@ -87,7 +121,7 @@
 
                             <Label Grid.Column="1" Content="{Binding Number, Mode=TwoWay}"/>
 
-                            <TextBox Grid.Column="2" VerticalContentAlignment="Center" Text="{Binding Name, Mode=TwoWay}" IsTabStop="True"/>
+                            <TextBox Grid.Column="2" VerticalContentAlignment="Center" IsTabStop="True" Text="{Binding Name, Mode=TwoWay}"/>
 
                             <Button Grid.Column="4" x:Name="btnMerge" Click="btnMerge_Click" Content="{Binding Tag, Converter={StaticResource ButtonConverter}, ElementName=songListBox}" IsEnabled="{Binding DataContext.CanRemove,RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">
                                 <Button.Visibility>
@@ -110,10 +144,44 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <ListBox Grid.Row="1" x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter}}">
+
+            <ListBox Grid.Row="1" x:Name="AutoListBox" ItemsSource="{Binding AutoList}" Visibility="{Binding MethodLevel,Converter={StaticResource AssociationConverter}}" AlternationCount="2">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
+
                         <EventSetter Event="MouseDoubleClick" Handler="EventSetter_OnHandler"></EventSetter>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Name="Border" Padding="2" SnapsToDevicePixels="true" Background="LightGray">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <Setter Property="Background" Value="Transparent" TargetName="Border"/>
+                                        </Trigger>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="Gray" TargetName="Border"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" TargetName="Border">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="Aqua"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" TargetName="Border">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="Aqua" Opacity="0.25"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
@@ -172,18 +240,18 @@
                     <ColumnDefinition Width="{Binding ArtistWidthType}"/>
                     <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="{Binding AlbumWidthType}"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="{Binding AlbumWidthType}"/>
                 </Grid.ColumnDefinitions>
 
                 <Label VerticalContentAlignment="Center" Content="Artist:" Grid.Column="0"/>
 
-                <TextBox Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" KeyUp="SearchTextBox_OnKeyUp"/>
+                <TextBox Name="SearchTextBox" VerticalContentAlignment="Center" Text="{Binding ManualArtistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" KeyUp="SearchTextBox_OnKeyUp"/>
 
                 <Label VerticalContentAlignment="Center" Content="Album:" Grid.Column="4" Width="50" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                 <TextBox Name="SearchTextBox1" VerticalContentAlignment="Center" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter}}" 
-                         Text="{Binding AlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="5"/>
+                         Text="{Binding ManualAlbumName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="5"/>
 
                 <Button Name="SearchButton" Grid.Column="3" Click="SearchButton_OnClick" Visibility="{Binding IsManual, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter=1}" Width="50">
                     <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Search</Label>
@@ -204,7 +272,7 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1" Click="OKButton_Click" Content="OK"/>
             <Button Grid.Column="3" Click="BrowseButton_Click" Content="Browse"/>
-            <Button Grid.Column="5" Click="SwitchButton_Click" Content="{Binding SwitchText}"/>
+            <Button Grid.Column="5" Click="SwitchButton_Click" Content="{Binding SwitchText}" Width="Auto"/>
         </Grid>
 
         <Label Name="DragLabel" Grid.Row="0" Grid.RowSpan="5" Content="Drag in image files" Foreground="Gray" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Visibility="Collapsed"></Label>

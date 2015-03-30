@@ -447,6 +447,32 @@ namespace RecordRemoteClientApp.ViewModel
                         int i = 0;
                         if (vm.IsManual)
                         {
+                            //Go through all the songs in the Association View and add them to the database
+                            foreach (SongAndNumber sn in (vm.SongList))
+                            {
+                                if (i == 0)
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.ManualArtistName,
+                                        vm.ManualAlbumName, i + 1, int.MinValue, Convert.ToInt32(na.Key[0]));
+                                }
+                                else if (i == vm.SongList.Count - 1)
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.ManualArtistName,
+                                        vm.ManualAlbumName, i + 1, Convert.ToInt32(na.Key[na.Key.Length - 1]),
+                                        int.MaxValue);
+                                }
+                                else
+                                {
+                                    AddSongToDatabase(na.Key, sn.Name, vm.ManualArtistName,
+                                        vm.ManualAlbumName, i + 1, Convert.ToInt32(na.Key[i - 1]),
+                                        Convert.ToInt32(na.Key[i]));
+                                }
+
+                                i++;
+                            }
+                            //Add the album to the database
+                            AddAlbumToDatabase(na.Key, vm.ManualAlbumName, vm.ManualArtistName, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
+
                         }
                         else
                         {
@@ -473,10 +499,9 @@ namespace RecordRemoteClientApp.ViewModel
 
                                 i++;
                             }
+                            //Add the album to the database
+                            AddAlbumToDatabase(na.Key, vm.SelectedAlbum.Name, vm.SelectedArtist.Name, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
                         }
-
-                        //Add the album to the database
-                        AddAlbumToDatabase(na.Key, vm.SelectedAlbum.Name, vm.SelectedArtist.Name, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
 
                         RefreshCurrentSongList(na.Key);
 
@@ -620,6 +645,17 @@ namespace RecordRemoteClientApp.ViewModel
         #endregion
 
         #region misc
+
+        public void SetCurrentAlbum(Song song)
+        {
+            RefreshCurrentSongList(song.Key);
+
+            RefreshSongList();
+
+            RefreshWebApi();
+
+            Sender.SendSyncMessage(song.Key);
+        }
 
         /// <summary>
         /// Show all the songs from the database on startup

@@ -13,7 +13,9 @@ namespace RecordRemoteClientApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (int.Parse((string)parameter) == 3 && (int)value == 50)
+            int x;
+            int.TryParse(((string)parameter), out x);
+            if (x == 3 && (int)value == 50)
             {
                 return Visibility.Visible;
             }
@@ -36,7 +38,7 @@ namespace RecordRemoteClientApp.Converters
                 return Visibility.Collapsed;
             }
 
-            if ((string)parameter == "Label" && (int)value > 0)
+            if ((string)parameter == "Label" && (int)value > 0 && (int)value < 50)
             {
                 return Visibility.Visible;
             }
@@ -45,7 +47,7 @@ namespace RecordRemoteClientApp.Converters
                 return Visibility.Collapsed;
             }
 
-            if (int.Parse((string)parameter) == -1 && (int)value >= 10)
+            if (int.Parse((string)parameter) == -1 && (int)value >= 10 && (int)value < 50)
             {
                 return Visibility.Visible;
             }
