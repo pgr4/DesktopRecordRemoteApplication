@@ -40,51 +40,6 @@ namespace RecordRemoteClientApp.Data
             return ret;
         }
 
-        //TODO:REMOVE?
-        public static void SendPlayPauseMessage(bool play)
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader((byte)(play ? 11 : 12));
-
-                s.SendTo(header, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        public static void SendGoToTrackMessage(byte b)
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader((byte)10);
-
-                byte[] message = new byte[header.Length + 1];
-                header.CopyTo(message, 0);
-                message[header.Length] = b;
-
-                s.SendTo(message, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
         public static void SendStatusMessage(BusyStatus bs)
         {
             try
@@ -197,7 +152,10 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void PlayMessage(Models.Song SelectedSong)
+        /// <summary>
+        /// Lower Command
+        /// </summary>
+        public static void PlayMessage()
         {
             try
             {
@@ -209,12 +167,7 @@ namespace RecordRemoteClientApp.Data
 
                 byte[] header = GetHeader((byte)MessageCommand.MediaPlay);
 
-                byte[] message =new byte[header.Length + 2];
-
-                header.CopyTo(message,0);
-                message[header.Length] = (byte)SelectedSong.BreakLocationStart;
-                message[header.Length + 1] = (byte)SelectedSong.BreakLocationEnd;
-                s.SendTo(message, ep);
+                s.SendTo(header, ep);
             }
             catch (Exception e)
             {
@@ -222,7 +175,8 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void SendSkipMessage(Models.Song SelectedSong)
+
+        public static void StopMessage()
         {
             try
             {
@@ -232,13 +186,9 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.MediaSkip);
-                byte[] message = new byte[header.Length + 2];
+                byte[] header = GetHeader((byte)MessageCommand.MediaStop);
 
-                header.CopyTo(message, 0);
-                message[header.Length] = (byte)SelectedSong.BreakLocationStart;
-                message[header.Length + 1] = (byte)SelectedSong.BreakLocationEnd;
-                s.SendTo(message, ep);
+                s.SendTo(header, ep);
             }
             catch (Exception e)
             {
@@ -246,7 +196,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void SendRewindMessage(Models.Song SelectedSong)
+        public static void GoToTrackMessage(byte b)
         {
             try
             {
@@ -256,13 +206,33 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.MediaRewind);
-                byte[] message = new byte[header.Length + 2];
+                byte[] header = GetHeader((byte)MessageCommand.GoToTrack);
 
+                byte[] message = new byte[header.Length + 1];
                 header.CopyTo(message, 0);
-                message[header.Length] = (byte)SelectedSong.BreakLocationStart;
-                message[header.Length + 1] = (byte)SelectedSong.BreakLocationEnd;
+                message[header.Length] = b;
+
                 s.SendTo(message, ep);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public static void GoToBeginningMessage()
+        {
+            try
+            {
+                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+
+                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
+
+                byte[] header = GetHeader((byte)MessageCommand.MediaGoToBeginning);
+
+                s.SendTo(header, ep);
             }
             catch (Exception e)
             {

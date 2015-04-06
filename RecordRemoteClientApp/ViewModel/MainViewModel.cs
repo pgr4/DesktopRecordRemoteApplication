@@ -593,14 +593,22 @@ namespace RecordRemoteClientApp.ViewModel
         {
             if (SelectedSong != null)
             {
-                Sender.PlayMessage(SelectedSong);
-                IsPlaying = true;
+                if (IsPlaying == false && CurrentSong == SelectedSong)
+                {
+                    Sender.PlayMessage();
+                    IsPlaying = true;
+                }
+                else
+                {
+                    Sender.GoToTrackMessage((byte)SelectedSong.BreakLocationStart);
+                    IsPlaying = true;
+                }
             }
         }
 
         public void Pause()
         {
-            Sender.SendGenericMessage(MessageCommand.MediaStop);
+            Sender.StopMessage();
             IsPlaying = false;
         }
 
@@ -614,11 +622,11 @@ namespace RecordRemoteClientApp.ViewModel
 
                 if (skipSong != null)
                 {
-                    Sender.SendSkipMessage(skipSong);
+                    Sender.GoToTrackMessage((byte)skipSong.BreakLocationStart);
                 }
                 else
                 {
-                    Sender.SendGenericMessage(MessageCommand.MediaGoToBeginning);
+                    Sender.GoToBeginningMessage();
                 }
             }
         }
@@ -633,11 +641,11 @@ namespace RecordRemoteClientApp.ViewModel
 
                 if (rewindSong != null)
                 {
-                    Sender.SendRewindMessage(rewindSong);
+                    Sender.GoToTrackMessage((byte)rewindSong.BreakLocationStart);
                 }
                 else
                 {
-                    Sender.SendGenericMessage(MessageCommand.MediaGoToBeginning);
+                    Sender.GoToBeginningMessage();
                 }
             }
         }

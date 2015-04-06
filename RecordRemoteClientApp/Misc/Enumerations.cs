@@ -34,11 +34,9 @@ namespace RecordRemoteClientApp.Enumerations
         sScan = 26,
 
         MediaGoToTrack = 30,
-        MediaPlay = 31,
-        MediaStop = 32,
-        MediaRewind = 33,
-        MediaSkip = 34,
-        MediaGoToBeginning = 35
+        MediaPlay = 31, //if currentSong == selectedSong and Paused
+        MediaStop = 32, // if Playing
+        MediaGoToBeginning = 33
     }
 
     public enum PowerStatus
