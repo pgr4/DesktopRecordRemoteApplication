@@ -259,6 +259,7 @@ namespace RecordRemoteClientApp.ViewModel
             DataListener.SetBusyStatus += DataListener_SetBusyStatus;
             DataListener.SyncMessage += DataListener_SyncMessage;
             DataListener.EventPositionUpdate += DataListener_EventPositionUpdate;
+            DataListener.EventPlayingUpdate += DataListener_PlayingUpdate;
 
             PowerType = PowerStatus.Unknown;
             BusyType = BusyStatus.Unknown;
@@ -583,6 +584,11 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        private void DataListener_PlayingUpdate(bool b)
+        {
+            IsPlaying = b;
+        }
+
         #endregion
 
         #region Public Functions
@@ -596,12 +602,10 @@ namespace RecordRemoteClientApp.ViewModel
                 if (IsPlaying == false && CurrentSong == SelectedSong)
                 {
                     Sender.PlayMessage();
-                    IsPlaying = true;
                 }
                 else
                 {
                     Sender.GoToTrackMessage((byte)SelectedSong.BreakLocationStart);
-                    IsPlaying = true;
                 }
             }
         }
@@ -609,7 +613,6 @@ namespace RecordRemoteClientApp.ViewModel
         public void Pause()
         {
             Sender.StopMessage();
-            IsPlaying = false;
         }
 
         public void Skip()

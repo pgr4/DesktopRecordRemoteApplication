@@ -34,8 +34,8 @@ namespace RecordRemoteClientApp.Enumerations
         sScan = 26,
 
         MediaGoToTrack = 30,
-        MediaPlay = 31, //if currentSong == selectedSong and Paused
-        MediaStop = 32, // if Playing
+        MediaPlay = 31,
+        MediaStop = 32,
         MediaGoToBeginning = 33
     }
 

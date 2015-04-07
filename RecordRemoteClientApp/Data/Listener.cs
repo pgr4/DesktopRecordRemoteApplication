@@ -62,6 +62,9 @@ namespace RecordRemoteClientApp.Data
         public delegate void PositionUpdateEvent(byte? b);
         public event PositionUpdateEvent EventPositionUpdate;
 
+        public delegate void PlayingUpdate(bool b);
+        public event PlayingUpdate EventPlayingUpdate;
+
         #endregion
 
         public void Speak()
@@ -99,7 +102,6 @@ namespace RecordRemoteClientApp.Data
                                 }
                                 break;
                             case MessageCommand.CurrentAlbum:
-                                //Todo: THIS IS TEST
                                 NewAlbum na1 = MessageParser.ParseNewAlbum(bytes, ref pointer);
 
                                 if (NewCurrentAlbum != null)
@@ -165,8 +167,50 @@ namespace RecordRemoteClientApp.Data
                                     EventPositionUpdate(null);
                                 }
                                 break;
+                            case MessageCommand.Play:
+                                if (SetBusyStatus != null)
+                                {
+                                    SetBusyStatus((BusyStatus)mh.Command);
+                                    BusyStatusType = (BusyStatus)mh.Command;
+                                }
+                                if (EventPlayingUpdate != null)
+                                {
+                                    EventPlayingUpdate(true);
+                                }
+                                break;
+                            case MessageCommand.GoToTrack:
+                                if (SetBusyStatus != null)
+                                {
+                                    SetBusyStatus((BusyStatus)mh.Command);
+                                    BusyStatusType = (BusyStatus)mh.Command;
+                                }
+                                if (EventPlayingUpdate != null)
+                                {
+                                    EventPlayingUpdate(false);
+                                }
+                                break;
+                            case MessageCommand.Pause:
+                                if (SetBusyStatus != null)
+                                {
+                                    SetBusyStatus((BusyStatus)mh.Command);
+                                    BusyStatusType = (BusyStatus)mh.Command;
+                                }
+                                if (EventPlayingUpdate != null)
+                                {
+                                    EventPlayingUpdate(false);
+                                }
+                                break;
+                            case MessageCommand.Stop:
+                            case MessageCommand.sScan:
+                            case MessageCommand.Unknown:
+                            case MessageCommand.Ready: 
+                                if (SetBusyStatus != null)
+                                {
+                                    SetBusyStatus((BusyStatus)mh.Command);
+                                    BusyStatusType = (BusyStatus)mh.Command;
+                                }
+                                break;
                             default:
-                                //TODO: MAKE SURE ALL COMMANDS ARE BUSY IF LEFT DEFAULT
                                 if (SetBusyStatus != null)
                                 {
                                     SetBusyStatus((BusyStatus)mh.Command);
