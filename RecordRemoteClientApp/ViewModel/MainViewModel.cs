@@ -564,6 +564,16 @@ namespace RecordRemoteClientApp.ViewModel
         {
             PowerType = ps;
             PStatus = ps.ToString();
+
+            if (ps == PowerStatus.Unknown || ps == PowerStatus.Off)
+            {
+                SelectedSong = null;
+                CurrentAlbum = null;
+                CurrentSong = null;
+                CurrentSongList.Clear();
+                QueueList.Clear();
+                //IsCurrentAlbumVisible = Visibility.Collapsed;
+            }
         }
 
         private void DataListener_EventPositionUpdate(byte? b)
