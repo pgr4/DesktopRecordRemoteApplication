@@ -81,27 +81,6 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        //TODO:REMOVE
-        public static void SendScanMessage()
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader(4);
-
-                s.SendTo(header, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
         public static void SendSyncMessage(byte[] b)
         {
             try
@@ -207,6 +186,30 @@ namespace RecordRemoteClientApp.Data
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
                 byte[] header = GetHeader((byte)MessageCommand.GoToTrack);
+
+                byte[] message = new byte[header.Length + 1];
+                header.CopyTo(message, 0);
+                message[header.Length] = b;
+
+                s.SendTo(message, ep);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public static void QueueGoToTrackMessage(byte b)
+        {
+            try
+            {
+                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
+
+                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
+
+                byte[] header = GetHeader((byte)MessageCommand.QueueGoToTrack);
 
                 byte[] message = new byte[header.Length + 1];
                 header.CopyTo(message, 0);

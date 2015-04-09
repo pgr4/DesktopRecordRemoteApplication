@@ -73,6 +73,9 @@
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="25"></RowDefinition>
+                    <RowDefinition Height="10"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
                     <RowDefinition Height="10"></RowDefinition>
                     <RowDefinition Height="40"></RowDefinition>
                     <RowDefinition Height="10"></RowDefinition>
@@ -87,7 +90,9 @@
                     <ColumnDefinition Width="10"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Row="1" Grid.Column="1" Background="{Binding BusyType,Converter={StaticResource StatusConverter}}">
+                <Label Grid.ColumnSpan="5" HorizontalContentAlignment="Center">Functions and Status</Label>
+                
+                <Border Grid.Row="2" Grid.Column="1" Background="{Binding BusyType,Converter={StaticResource StatusConverter}}">
                     <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="White">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}Status: {0}">
@@ -97,7 +102,7 @@
                     </TextBlock>
                 </Border>
 
-                <Border Background="{Binding PowerType,Converter={StaticResource StatusConverter}}" Grid.Row="1" Grid.Column="3">
+                <Border Background="{Binding PowerType,Converter={StaticResource StatusConverter}}" Grid.Row="2" Grid.Column="3">
                     <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="White">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}Power: {0}">
@@ -107,12 +112,17 @@
                     </TextBlock>
                 </Border>
 
-                <Button Name="btnScan" Click="btnScan_Click" Grid.Row="3" Grid.Column="1">Scan</Button>
+                <Button Name="btnScan" Click="btnScan_Click" Grid.Row="4" Grid.Column="1">Scan</Button>
 
-                <Button Name="btnPower" Click="btnPower_Click" Content="{Binding PowerType,Converter={StaticResource InversePowerConverter}}" IsEnabled="{Binding PowerEnable}" Grid.Row="3" Grid.Column="3"></Button>
+                <Button Name="btnPower" Click="btnPower_Click" Content="{Binding PowerType,Converter={StaticResource InversePowerConverter}}" IsEnabled="{Binding PowerEnable}" Grid.Row="4" Grid.Column="3"></Button>
+
+                <Button Name="btnGetPower" Click="btnGetPower_Click" Grid.Row="6" Grid.Column="1">Get Power</Button>
+
+                <Button Name="btnGetStatus" Click="btnGetStatus_Click" Grid.Row="6" Grid.Column="3">Get Power</Button>
+
 
             </Grid>
-            <Border Grid.Row="1" BorderThickness="2" BorderBrush="Black">
+            <Border Grid.Row="2" BorderThickness="2" BorderBrush="Black">
                 <Image Source="{Binding CurrentAlbum.Image}" Stretch="Fill"></Image>
             </Border>
         </Grid>
@@ -136,6 +146,9 @@
 
         <!--Queue Grid-->
         <Grid Name="QueueGrid" Grid.Row="2" Grid.Column="5">
+            <StackPanel Orientation="Vertical">
+
+                <Label HorizontalContentAlignment="Center">Queue List</Label>
             <ListView ItemsSource="{Binding QueueList,Mode=TwoWay}" AllowDrop="True" Drop="ListBox_Drop">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -148,6 +161,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            </StackPanel>
         </Grid>
 
         <!--Remote Area-->

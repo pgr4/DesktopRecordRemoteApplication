@@ -30,7 +30,7 @@ namespace RecordRemoteClientApp
 
         private void btnScan_Click(object sender, RoutedEventArgs e)
         {
-            Sender.SendScanMessage();
+            Sender.SendGenericMessage(MessageCommand.Scan);
         }
 
         private void btnPower_Click(object sender, RoutedEventArgs e)
@@ -46,6 +46,16 @@ namespace RecordRemoteClientApp
             }
         }
 
+        private void btnGetPower_Click(object sender, RoutedEventArgs e)
+        {
+            Sender.SendGenericMessage(MessageCommand.GetPower);
+        }
+
+        private void btnGetStatus_Click(object sender, RoutedEventArgs e)
+        {
+            Sender.SendGenericMessage(MessageCommand.Status);
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Application.Current.Shutdown();
@@ -53,7 +63,7 @@ namespace RecordRemoteClientApp
 
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-           Close();
+            Close();
         }
     }
 

@@ -36,7 +36,9 @@ namespace RecordRemoteClientApp.Enumerations
         MediaGoToTrack = 30,
         MediaPlay = 31,
         MediaStop = 32,
-        MediaGoToBeginning = 33
+        MediaGoToBeginning = 33,
+        QueueGoToTrack = 34,
+        QueueGoToBeginning = 35
     }
 
     public enum PowerStatus

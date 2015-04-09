@@ -30,7 +30,7 @@ namespace RecordRemoteClientApp.ViewModel
         private SQLiteConnection db;
         private SQLiteConnection dbConnection;
 
-        private string default_albumart_location = @"C:\Users\pat\Desktop\vinyl-record.jpg";
+        private string default_albumart_location = @"C:\RecordWebApi\vinyl-record.jpg";
         private byte[] default_albumart;
 
         #endregion
@@ -572,25 +572,44 @@ namespace RecordRemoteClientApp.ViewModel
                 CurrentSong = null;
                 CurrentSongList.Clear();
                 QueueList.Clear();
+                IsPlaying = false;
                 //IsCurrentAlbumVisible = Visibility.Collapsed;
             }
         }
 
         private void DataListener_EventPositionUpdate(byte? b)
         {
-            if (b == null)
+            if (QueueList.Count != 0)
             {
-                if (SongList.Count > 0)
+                CurrentSong = QueueList[0];
+                QueueList.RemoveAt(0);
+                RaisePropertyChanged("CurrentSong");
+                RaisePropertyChanged("QueueList");
+                if(CurrentSong.BreakLocationStart == int.MinValue)
                 {
-                    CurrentSong = SongList[0];
+                    Sender.SendGenericMessage(MessageCommand.QueueGoToBeginning);
+                }
+                else
+                {
+                    Sender.QueueGoToTrackMessage((byte)CurrentSong.BreakLocationStart);
                 }
             }
             else
             {
-                var item = (from i in SongList
-                            where Convert.ToInt32(b.Value) == i.BreakLocationStart
-                            select i).FirstOrDefault();
-                CurrentSong = item;
+                if (b == null)
+                {
+                    if (SongList.Count > 0)
+                    {
+                        CurrentSong = SongList[0];
+                    }
+                }
+                else
+                {
+                    var item = (from i in SongList
+                                where Convert.ToInt32(b.Value) == i.BreakLocationStart
+                                select i).FirstOrDefault();
+                    CurrentSong = item;
+                }
             }
         }
 

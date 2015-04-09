@@ -137,7 +137,9 @@ namespace RecordRemoteClientApp.Data
                             case MessageCommand.SwitchPowerOn:
                             case MessageCommand.SwitchPowerOff:
                             case MessageCommand.MediaGoToBeginning:
+                            case MessageCommand.QueueGoToBeginning:
                             case MessageCommand.MediaGoToTrack:
+                            case MessageCommand.QueueGoToTrack:
                             case MessageCommand.MediaPlay:
                             case MessageCommand.MediaStop:
                                 //Ignore
