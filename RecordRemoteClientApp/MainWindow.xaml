@@ -4,7 +4,7 @@
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:vws="clr-namespace:RecordRemoteClientApp.Views"
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
-        Title="Digital Record Player Remote" WindowState="Maximized" Closing="Window_Closing">
+        Title="Digital Record Player" WindowState="Maximized" Closing="Window_Closing">
 
     <Window.DataContext>
         <vm:MainViewModel></vm:MainViewModel>
@@ -16,6 +16,7 @@
             <conv:StatusToColorConverter x:Key="StatusConverter"/>
             <conv:InversePowerConverter x:Key="InversePowerConverter"/>
             <conv:TabEnableConverter x:Key="TabEnableConverter"></conv:TabEnableConverter>
+            <conv:BorderConverter x:Key="BorderConverter"></conv:BorderConverter>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -55,12 +56,12 @@
         <Grid Name="MenuGrid" Grid.Row="0" Grid.ColumnSpan="7">
             <Menu Name="MainMenu">
                 <MenuItem Header="File">
-                    <MenuItem Header="Settings"></MenuItem>
+                    <MenuItem Header="Settings" Click="SettingsMenuItem_Click"></MenuItem>
                     <Separator></Separator>
                     <MenuItem Header="Exit" Name="ExitMenuItem" Click="ExitMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Help">
-                    <MenuItem Header="About"></MenuItem>
+                    <MenuItem Header="About" Click="AboutMenuItem_Click"></MenuItem>
                 </MenuItem>
             </Menu>
         </Grid>
@@ -90,8 +91,8 @@
                     <ColumnDefinition Width="10"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.ColumnSpan="5" HorizontalContentAlignment="Center">Functions and Status</Label>
-                
+                <Label Grid.ColumnSpan="5" HorizontalContentAlignment="Center" Background="#4C002146">Functions and Status</Label>
+
                 <Border Grid.Row="2" Grid.Column="1" Background="{Binding BusyType,Converter={StaticResource StatusConverter}}">
                     <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="White">
                         <TextBlock.Text>
@@ -118,11 +119,11 @@
 
                 <Button Name="btnGetPower" Click="btnGetPower_Click" Grid.Row="6" Grid.Column="1">Get Power</Button>
 
-                <Button Name="btnGetStatus" Click="btnGetStatus_Click" Grid.Row="6" Grid.Column="3">Get Power</Button>
+                <Button Name="btnGetStatus" Click="btnGetStatus_Click" Grid.Row="6" Grid.Column="3">Get Status</Button>
 
 
             </Grid>
-            <Border Grid.Row="2" BorderThickness="2" BorderBrush="Black">
+            <Border Grid.Row="2" BorderThickness="{Binding CurrentAlbum.Image,Converter={StaticResource BorderConverter}}" BorderBrush="Black">
                 <Image Source="{Binding CurrentAlbum.Image}" Stretch="Fill"></Image>
             </Border>
         </Grid>
@@ -146,22 +147,28 @@
 
         <!--Queue Grid-->
         <Grid Name="QueueGrid" Grid.Row="2" Grid.Column="5">
-            <StackPanel Orientation="Vertical">
+            <Grid>
 
-                <Label HorizontalContentAlignment="Center">Queue List</Label>
-            <ListView ItemsSource="{Binding QueueList,Mode=TwoWay}" AllowDrop="True" Drop="ListBox_Drop">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label  HorizontalContentAlignment="Center" Background="#4C002146">Queue List</Label>
+
+                <ListView Grid.Row="1"  ItemsSource="{Binding QueueList,Mode=TwoWay}" AllowDrop="True" Drop="ListBox_Drop">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, 
                                          AncestorType={x:Type ListViewItem}}, 
                                          Converter={StaticResource IndexConverter}}"></Label>
-                            <Label Content="{Binding Title}"></Label>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            </StackPanel>
+                                <Label Content="{Binding Title}"></Label>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
 
         <!--Remote Area-->

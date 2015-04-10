@@ -686,6 +686,25 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region misc
 
+        private void GetSettings()
+        {
+            foreach (var item in File.ReadAllLines(@"C:\RecordWebApi\settings.txt"))
+            {
+                if (item.Contains("main"))
+                {
+                    var main = item.Replace("main","");
+                }
+                else if (item.Contains("secondary"))
+                {
+                    var secondary = item.Replace("secondary","");
+                }
+                else if (item.Contains("highlight"))
+                {
+                    var highlight = item.Replace("highlight","");
+                }
+            }
+        }
+
         public void SetCurrentAlbum(Song song)
         {
             RefreshCurrentSongList(song.Key);

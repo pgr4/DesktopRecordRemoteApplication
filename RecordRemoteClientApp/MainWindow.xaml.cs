@@ -2,7 +2,10 @@
 using RecordRemoteClientApp.Enumerations;
 using RecordRemoteClientApp.Models;
 using RecordRemoteClientApp.ViewModel;
+using RecordRemoteClientApp.Views;
+using System;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace RecordRemoteClientApp
 {
@@ -14,6 +17,8 @@ namespace RecordRemoteClientApp
         public MainWindow()
         {
             InitializeComponent();
+
+            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative)); 
         }
 
         private void ListBox_Drop(object sender, DragEventArgs e)
@@ -64,6 +69,16 @@ namespace RecordRemoteClientApp
         private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsView().Show();
+        }
+
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new AboutView().Show();
         }
     }
 

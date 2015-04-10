@@ -1,0 +1,75 @@
+﻿<Window x:Class="RecordRemoteClientApp.Views.AboutView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About" Height="350" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="5"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="5"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="1" Grid.Column="1">Purpose:</Label>
+        <TextBlock TextWrapping="Wrap" Grid.Column="1" Grid.Row="2">
+            This application was designed and created by Patrick Ryan and the Senior Design Team #12 of 2015 from the 
+            University of Akron. The purpose of this application is to provide control of our Record Player in a similar
+            fashion of operating any media application.
+        </TextBlock>
+        <Grid Grid.Column="1" Grid.Row="3">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                
+                <Label Grid.Row="0">Team Members</Label>
+                <Label Grid.Row="1">Kyle Crider - ECE</Label>
+                <Label Grid.Row="2">Jake Demian - CPE</Label>
+                <Label Grid.Row="3">Carson Lau - ECE</Label>
+                <Label Grid.Row="4">Patrick Ryan - CPE</Label>
+
+            </Grid>
+            
+            <Grid Grid.Column="1">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+
+                <Label Grid.Row="0">Faculty Advisor</Label>
+                <Label Grid.Row="0" Grid.Column="1">Bahrami</Label>
+
+                <Label Grid.Row="1">Version</Label>
+                <Label Grid.Row="1" Grid.Column="1">1.0.</Label>
+
+                <Label Grid.Row="2">Years</Label>
+                <Label Grid.Row="2" Grid.Column="1">2013-2015</Label>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

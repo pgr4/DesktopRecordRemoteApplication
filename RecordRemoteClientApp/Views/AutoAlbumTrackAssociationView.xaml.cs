@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace RecordRemoteClientApp.Views
 {
@@ -27,11 +28,16 @@ namespace RecordRemoteClientApp.Views
         public AutoAlbumTrackAssociationView()
         {
             InitializeComponent();
+
+            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative)); 
         }
 
         public AutoAlbumTrackAssociationView(NewAlbum na)
         {
             InitializeComponent();
+
+            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative)); 
+
             DataContext = new AutoAlbumTrackAssociationViewModel(na);
         }
 

@@ -1,0 +1,31 @@
+﻿<Window x:Class="RecordRemoteClientApp.Views.SettingsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        Title="Settings" Height="300" Width="300">
+    
+    <Window.DataContext>
+        <vm:SettingsViewModel></vm:SettingsViewModel>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0">Main Color</Label>
+        <wpfTool:ColorPicker Grid.Row="0" Grid.Column="1" SelectedColor="{Binding MainColor}"></wpfTool:ColorPicker>
+
+        <Label Grid.Row="1" Grid.Column="0">Secondary Color</Label>
+        <wpfTool:ColorPicker Grid.Row="1" Grid.Column="1" SelectedColor="{Binding SecondaryColor}"></wpfTool:ColorPicker>
+
+        <Label Grid.Row="2" Grid.Column="0">Highlight Color</Label>
+        <wpfTool:ColorPicker Grid.Row="2" Grid.Column="1" SelectedColor="{Binding HighlightColor}"></wpfTool:ColorPicker>
+    </Grid>
+</Window>
