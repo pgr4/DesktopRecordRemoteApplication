@@ -81,7 +81,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void SendSyncMessage(byte[] b)
+        public static void SendSyncMessage(int[] b)
         {
             try
             {

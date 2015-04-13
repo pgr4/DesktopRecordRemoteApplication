@@ -313,11 +313,11 @@ namespace RecordRemoteClientApp.ViewModel
                 SQLiteCommand command;
 
                 //CREATE TABLES
-                sql = "CREATE TABLE tblSong (Id integer primary key, Key blob, Title text, Artist text, Album text, Break_Number integer, Break_Location_Start integer, Break_Location_End integer)";
+                sql = "CREATE TABLE tblSong (Id integer primary key, Key text, Title text, Artist text, Album text, Break_Number integer, Break_Location_Start integer, Break_Location_End integer)";
                 command = new SQLiteCommand(sql, dbConnection);
                 command.ExecuteNonQuery();
 
-                sql = "CREATE TABLE tblAlbum (Id integer primary key, Key blob, Album text, Artist text, Calculated integer, Breaks integer, Image blob)";
+                sql = "CREATE TABLE tblAlbum (Id integer primary key, Key text, Album text, Artist text, Calculated integer, Breaks integer, Image blob)";
                 command = new SQLiteCommand(sql, dbConnection);
                 command.ExecuteNonQuery();
             }
@@ -345,7 +345,7 @@ namespace RecordRemoteClientApp.ViewModel
             DbAlbums = context.GetTable<tblAlbum>();
         }
 
-        private void AddAlbumToDatabase(byte[] key, string album, string artist, bool calculated, int breaks, byte[] image)
+        private void AddAlbumToDatabase(int[] key, string album, string artist, bool calculated, int breaks, byte[] image)
         {
             string sql;
             SQLiteCommand command;
@@ -353,12 +353,12 @@ namespace RecordRemoteClientApp.ViewModel
             album = album.Replace("'", "''");
             sql = "insert into tblAlbum (Key, Album, Artist, Calculated, Breaks, Image) values (@Key,'" + album + "','" + artist + "','" + Convert.ToInt16(calculated) + "','" + breaks + "', @Image)";
             command = new SQLiteCommand(sql, dbConnection);
-            command.Parameters.Add("@Key", DbType.Binary).Value = key;
+            command.Parameters.Add("@Key", DbType.String).Value = KeyToString(key);
             command.Parameters.Add("@Image", DbType.Binary).Value = image;
             command.ExecuteNonQuery();
         }
 
-        private void AddSongToDatabase(byte[] key, string title, string artist, string album, int breakNum, int breakLocStart, int breakLocEnd)
+        private void AddSongToDatabase(int[] key, string title, string artist, string album, int breakNum, int breakLocStart, int breakLocEnd)
         {
             string sql;
             SQLiteCommand command;
@@ -367,8 +367,20 @@ namespace RecordRemoteClientApp.ViewModel
             album = album.Replace("'", "''");
             sql = "insert into tblSong (Key, Title, Artist, Album, Break_Number, Break_Location_Start, Break_Location_End) values (@Key,'" + title + "','" + artist + "','" + album + "','" + breakNum + "','" + breakLocStart + "','" + breakLocEnd + "')";
             command = new SQLiteCommand(sql, dbConnection);
-            command.Parameters.Add("@Key", DbType.Binary).Value = key;
+            command.Parameters.Add("@Key", DbType.String).Value = KeyToString(key);
             command.ExecuteNonQuery();
+        }
+
+        private string KeyToString(int[] key) 
+        {
+            string ret = key[0].ToString();
+
+            for (int i = 1; i < key.Length; i++)
+            {
+                ret += "," + key[i].ToString();
+            }
+
+            return ret;
         }
 
         /// <summary>
@@ -410,11 +422,12 @@ namespace RecordRemoteClientApp.ViewModel
             //Check if it isn't a new album
             foreach (var a in DbAlbums)
             {
-                if (a.Key.SequenceEqual(na.Key))
+                if(a.Key.Equals(na.Key))
                 {
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
                         RefreshCurrentSongList(na.Key);
+                        //RefreshCurrentSongList(na.IntKey);
 
                         CurrentAlbum = new Album(a);
 
@@ -429,6 +442,7 @@ namespace RecordRemoteClientApp.ViewModel
                     });
 
                     Sender.SendSyncMessage(na.Key);
+                    //Sender.SendSyncMessage(na.IntKey);
 
                     return;
                 }
@@ -461,18 +475,25 @@ namespace RecordRemoteClientApp.ViewModel
                                     AddSongToDatabase(na.Key, sn.Name, vm.ManualArtistName,
                                         vm.ManualAlbumName, i + 1, Convert.ToInt32(na.Key[na.Key.Length - 1]),
                                         int.MaxValue);
+                                    //AddSongToDatabase(na.IntKey, sn.Name, vm.ManualArtistName,
+                                    //   vm.ManualAlbumName, i + 1, na.IntKey[na.IntKey.Length - 1],
+                                    //   int.MaxValue);
                                 }
                                 else
                                 {
                                     AddSongToDatabase(na.Key, sn.Name, vm.ManualArtistName,
                                         vm.ManualAlbumName, i + 1, Convert.ToInt32(na.Key[i - 1]),
                                         Convert.ToInt32(na.Key[i]));
+                                    //AddSongToDatabase(na.IntKey, sn.Name, vm.ManualArtistName,
+                                    //    vm.ManualAlbumName, i + 1, na.IntKey[i - 1],
+                                    //    na.IntKey[i]);
                                 }
 
                                 i++;
                             }
                             //Add the album to the database
                             AddAlbumToDatabase(na.Key, vm.ManualAlbumName, vm.ManualArtistName, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
+                            //AddAlbumToDatabase(na.IntKey, vm.ManualAlbumName, vm.ManualArtistName, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
 
                         }
                         else
@@ -484,33 +505,44 @@ namespace RecordRemoteClientApp.ViewModel
                                 {
                                     AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
                                         vm.SelectedAlbum.Name, i + 1, int.MinValue, Convert.ToInt32(na.Key[0]));
+                                    //AddSongToDatabase(na.IntKey, sn.Name, vm.SelectedArtist.Name,
+                                    //    vm.SelectedAlbum.Name, i + 1, int.MinValue, na.IntKey[0]);
                                 }
-                                else if (i == vm.SongList.Count)
+                                else if (i == vm.SongList.Count-1)
                                 {
                                     AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
                                         vm.SelectedAlbum.Name, i + 1, Convert.ToInt32(na.Key[na.Key.Length - 1]),
                                         int.MaxValue);
+                                    //AddSongToDatabase(na.IntKey, sn.Name, vm.SelectedArtist.Name,
+                                    //   vm.SelectedAlbum.Name, i + 1, na.IntKey[na.IntKey.Length - 1],
+                                    //   int.MaxValue);
                                 }
                                 else
                                 {
                                     AddSongToDatabase(na.Key, sn.Name, vm.SelectedArtist.Name,
                                         vm.SelectedAlbum.Name, i + 1, Convert.ToInt32(na.Key[i - 1]),
                                         Convert.ToInt32(na.Key[i]));
+                                    //AddSongToDatabase(na.IntKey, sn.Name, vm.SelectedArtist.Name,
+                                    //    vm.SelectedAlbum.Name, i + 1, na.IntKey[i - 1],
+                                    //    na.IntKey[i]);
                                 }
 
                                 i++;
                             }
                             //Add the album to the database
                             AddAlbumToDatabase(na.Key, vm.SelectedAlbum.Name, vm.SelectedArtist.Name, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
+                            //AddAlbumToDatabase(na.IntKey, vm.SelectedAlbum.Name, vm.SelectedArtist.Name, true, na.Breaks, GetAlbumArt(vm.AlbumArtList.ToList()));
                         }
 
                         RefreshCurrentSongList(na.Key);
+                        //RefreshCurrentSongList(na.IntKey);
 
                         RefreshSongList();
 
                         RefreshWebApi();
 
                         Sender.SendSyncMessage(na.Key);
+                        //Sender.SendSyncMessage(na.IntKey);
                     }
                 };
             });
@@ -532,13 +564,15 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
-        private void DataListener_SyncMessage(byte[] key)
+        private void DataListener_SyncMessage(int[] key)
         {
             RefreshCurrentSongList(key);
+
             RefreshSongList();
+
             foreach (var a in DbAlbums)
             {
-                if (a.Key.SequenceEqual(key))
+                if (a.Key.Equals(key))
                 {
                     CurrentAlbum = new Album(a);
 
@@ -598,15 +632,16 @@ namespace RecordRemoteClientApp.ViewModel
             {
                 if (b == null)
                 {
-                    if (SongList.Count > 0)
+                    if (CurrentSongList.Count > 0)
                     {
-                        CurrentSong = SongList[0];
+                        CurrentSong = CurrentSongList[0];
                     }
                 }
                 else
                 {
-                    var item = (from i in SongList
+                    var item = (from i in CurrentSongList
                                 where Convert.ToInt32(b.Value) == i.BreakLocationStart
+                                //where b.Value == i.BreakLocationStart
                                 select i).FirstOrDefault();
                     CurrentSong = item;
                 }
@@ -735,10 +770,11 @@ namespace RecordRemoteClientApp.ViewModel
         /// Update the Current Song List
         /// </summary>
         /// <param name="b"></param>
-        public void RefreshCurrentSongList(byte[] b)
+        public void RefreshCurrentSongList(int[] b)
         {
+            //http://stackoverflow.com/questions/5621598/linq-to-entities-error-using-sequenceequal-enumerable-method
             var songs = (from item in DbSongs
-                         where item.Key == b
+                         where StringToKey(item.Key).SequenceEqual(b)
                          select item).ToList();
 
             CurrentSongList.Clear();
@@ -750,7 +786,7 @@ namespace RecordRemoteClientApp.ViewModel
 
             //SQLITE DOESN'T LIKE FIRSTORDEFAULT
             var albums = (from a in dbAlbums
-                          where a.Key == b
+                          where StringToKey(a.Key).SequenceEqual(b)
                           select a).ToList();
 
             foreach (var item in albums)
@@ -760,6 +796,13 @@ namespace RecordRemoteClientApp.ViewModel
             }
 
             RaisePropertyChanged("CurrentSongList");
+        }
+
+        private int[] StringToKey(string key)
+        {
+            string[] tokens = key.Split(',');
+
+            return Array.ConvertAll<string, int>(tokens, int.Parse);
         }
 
         /// <summary>

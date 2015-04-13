@@ -21,12 +21,19 @@ namespace RecordRemoteClientApp.Models
         {
             BreakNumber = item.Break_Number;
             ID = item.Id;
-            Key = item.Key;
+            Key = StringToKey(item.Key);
             Title = item.Title;
             Album = item.Album;
             Artist = item.Artist;
             BreakLocationStart = item.Break_Location_Start;
             BreakLocationEnd = item.Break_Location_End;
+        }
+
+        private int[] StringToKey(string key)
+        {
+            string[] tokens = key.Split(',');
+
+            return Array.ConvertAll<string, int>(tokens, int.Parse);
         }
 
         private string title;
@@ -55,6 +62,6 @@ namespace RecordRemoteClientApp.Models
         public int ID { get; set; }
         public string Artist { get; set; }
         public string Album { get; set; }
-        public byte[] Key { get; set; }
+        public int[] Key { get; set; }
     }
 }

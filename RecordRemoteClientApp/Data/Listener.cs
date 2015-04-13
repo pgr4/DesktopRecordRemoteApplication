@@ -50,7 +50,7 @@ namespace RecordRemoteClientApp.Data
         public delegate void NewCurrentAlbumDetected(NewAlbum na);
         public event NewCurrentAlbumDetected NewCurrentAlbum;
 
-        public delegate void SyncMessageDetected(byte[] key);
+        public delegate void SyncMessageDetected(int[] key);
         public event SyncMessageDetected SyncMessage;
 
         public delegate void BusyStatusEvent(BusyStatus bs);
@@ -118,7 +118,7 @@ namespace RecordRemoteClientApp.Data
                             case MessageCommand.Sync:
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    byte[] bKey = MessageParser.ParseKey(bytes, ref pointer);
+                                    int[] bKey = MessageParser.ParseIntKey(bytes, ref pointer);
                                     if (SyncMessage != null)
                                     {
                                         SyncMessage(bKey);

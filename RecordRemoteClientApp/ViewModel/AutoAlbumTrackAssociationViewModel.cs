@@ -181,7 +181,7 @@ namespace RecordRemoteClientApp.ViewModel
 
         private int SavedMethodLevel { get; set; }
 
-        private byte[] _key { get; set; }
+        private int[] _key { get; set; }
         private int _numberOfSongs { get; set; }
 
         private BackgroundWorker _bwArtist;

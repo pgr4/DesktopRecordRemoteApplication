@@ -8,7 +8,7 @@ namespace RecordRemoteClientApp.Models
         [Column(Name = "Id",IsPrimaryKey = true)]
         public int Id { get; set; }
         [Column(Name = "Key")]
-        public byte[] Key { get; set; }
+        public string Key { get; set; }
         [Column(Name = "Title")]
         public string Title { get; set; }
         [Column(Name = "Artist")]

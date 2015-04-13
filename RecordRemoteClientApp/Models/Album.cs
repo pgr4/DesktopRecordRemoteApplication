@@ -20,11 +20,18 @@ namespace RecordRemoteClientApp.Models
         {
             Name = album.Album;
             Artist = album.Artist;
-            Key = album.Key;
+            Key = StringToKey(album.Key);
             Breaks = album.Breaks;
             Calculated = Convert.ToBoolean(album.Calculated);
             ID = album.Id;
             Image = album.Image;
+        }
+
+        private int[] StringToKey(string key)
+        {
+            string[] tokens = key.Split(',');
+
+            return Array.ConvertAll<string, int>(tokens, int.Parse);
         }
 
         private string name;
@@ -75,9 +82,9 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
-        private byte[] key;
+        private int[] key;
 
-        public byte[] Key
+        public int[] Key
         {
             get { return key; }
             set { key = value; }

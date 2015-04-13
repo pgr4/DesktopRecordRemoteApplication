@@ -11,7 +11,7 @@ namespace RecordRemoteClientApp.Models
     public struct NewAlbum
     {
         public int Breaks;
-        public Byte[] Key;
+        public int[] Key;
     }
 
     public class MessageParser
@@ -32,7 +32,9 @@ namespace RecordRemoteClientApp.Models
         public static NewAlbum ParseNewAlbum(byte[] b, ref int pointer)
         {
             NewAlbum na = new NewAlbum();
-            na.Key = ParseKey(b, ref pointer);
+            //na.Key = ParseKey(b, ref pointer);
+            //na.Breaks = na.Key.Length;
+            na.Key = ParseIntKey(b, ref pointer);
             na.Breaks = na.Key.Length;
             return na;
         }
@@ -92,6 +94,27 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+        public static int[] ParseIntKey(byte[] bytes, ref int pointer)
+        {
+            int endingPoint = 0;
+            for (int i = pointer; i < bytes.Length; i++)
+            {
+                if (bytes[i] == 111 && bytes[i + 1] == 111 && bytes[i + 2] == 111 &&
+                    bytes[i + 3] == 111 && bytes[i + 4] == 111 && bytes[i + 5] == 111)
+                {
+                    endingPoint = i - pointer;
+                    break;
+                }
+            }
+
+            int[] ret = new int[endingPoint/2];
+            for (int i = 0; i < endingPoint/2; i++)
+            {
+                ret[i] = BitConverter.ToInt32(new byte[] { bytes[pointer++], bytes[pointer++], 0, 0 }, 0);
+            }
+
+            return ret;
+        }
 
         public static byte[] ParseKey(byte[] bytes, ref int pointer)
         {
