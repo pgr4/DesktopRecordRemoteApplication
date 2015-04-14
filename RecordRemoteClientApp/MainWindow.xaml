@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:vws="clr-namespace:RecordRemoteClientApp.Views"
         xmlns:conv="clr-namespace:RecordRemoteClientApp.Converters"
+        xmlns:s="clr-namespace:RecordRemoteClientApp.Misc"
         Title="Digital Record Player" WindowState="Maximized" Closing="Window_Closing">
 
     <Window.DataContext>
@@ -91,7 +92,7 @@
                     <ColumnDefinition Width="10"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.ColumnSpan="5" HorizontalContentAlignment="Center" Background="#4C002146">Functions and Status</Label>
+                <Label Grid.ColumnSpan="5" HorizontalContentAlignment="Center" Background="{Binding Source={x:Static s:Settings.Instance},Path=MainColor}">Functions and Status</Label>
 
                 <Border Grid.Row="2" Grid.Column="1" Background="{Binding BusyType,Converter={StaticResource StatusConverter}}">
                     <TextBlock TextAlignment="Center" VerticalAlignment="Center" Foreground="White">
@@ -117,15 +118,16 @@
 
                 <Button Name="btnPower" Click="btnPower_Click" Content="{Binding PowerType,Converter={StaticResource InversePowerConverter}}" IsEnabled="{Binding PowerEnable}" Grid.Row="4" Grid.Column="3"></Button>
 
-                <Button Name="btnGetPower" Click="btnGetPower_Click" Grid.Row="6" Grid.Column="1">Get Power</Button>
+                <Button Name="btnGetStatus" Click="btnGetStatus_Click" Grid.Row="6" Grid.Column="1">Get Status</Button>
 
-                <Button Name="btnGetStatus" Click="btnGetStatus_Click" Grid.Row="6" Grid.Column="3">Get Status</Button>
-
+                <Button Name="btnGetPower" Click="btnGetPower_Click" Grid.Row="6" Grid.Column="3">Get Power</Button>
 
             </Grid>
+
             <Border Grid.Row="2" BorderThickness="{Binding CurrentAlbum.Image,Converter={StaticResource BorderConverter}}" BorderBrush="Black">
                 <Image Source="{Binding CurrentAlbum.Image}" Stretch="Fill"></Image>
             </Border>
+
         </Grid>
 
         <!--Main Workspace-->
@@ -154,7 +156,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Label  HorizontalContentAlignment="Center" Background="#4C002146">Queue List</Label>
+                <Label  HorizontalContentAlignment="Center" Background="{Binding Source={x:Static s:Settings.Instance},Path=MainColor}">Queue List</Label>
 
                 <ListView Grid.Row="1"  ItemsSource="{Binding QueueList,Mode=TwoWay}" AllowDrop="True" Drop="ListBox_Drop">
                     <ListView.ItemTemplate>

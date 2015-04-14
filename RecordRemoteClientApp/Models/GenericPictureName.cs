@@ -60,11 +60,11 @@ namespace RecordRemoteClientApp.Models
             if (image == "")
             {
                 bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri(@"C:\Users\pat\Desktop\vinyl-record.jpg");
+                bitmapImage.UriSource = new Uri(@"C:\RecordWebApi\vinyl-record.jpg");
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
                 bitmapImage.Freeze();
-                ImgBytes = File.ReadAllBytes(@"C:\Users\pat\Desktop\vinyl-record.jpg");
+                ImgBytes = File.ReadAllBytes(@"C:\RecordWebApi\vinyl-record.jpg");
             }
             else
             {

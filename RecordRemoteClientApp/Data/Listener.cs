@@ -1,4 +1,5 @@
 ﻿using RecordRemoteClientApp.Enumerations;
+using RecordRemoteClientApp.Misc;
 using RecordRemoteClientApp.Models;
 using System;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace RecordRemoteClientApp.Data
         public delegate void PowerStatusEvent(PowerStatus bs);
         public event PowerStatusEvent SetPowerStatus;
 
-        public delegate void PositionUpdateEvent(byte? b);
+        public delegate void PositionUpdateEvent(int? b);
         public event PositionUpdateEvent EventPositionUpdate;
 
         public delegate void PlayingUpdate(bool b);
@@ -67,7 +68,7 @@ namespace RecordRemoteClientApp.Data
 
         #endregion
 
-        public void Speak()
+        public void Listen()
         {
             SetIpAddress();
 
@@ -93,21 +94,18 @@ namespace RecordRemoteClientApp.Data
                             case MessageCommand.NewAlbum:
                                 if (mh.DestinationAddress.Equals(ThisIpAddress))
                                 {
-                                    NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
-
-                                    if (NewAlbumEvent != null)
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        NewAlbumEvent(na);
-                                    }
+                                        NewAlbum na = MessageParser.ParseNewAlbum(bytes, ref pointer);
+
+                                        if (NewAlbumEvent != null)
+                                        {
+                                            NewAlbumEvent(na);
+                                        }
+                                    }));
                                 }
                                 break;
                             case MessageCommand.CurrentAlbum:
-                                NewAlbum na1 = MessageParser.ParseNewAlbum(bytes, ref pointer);
-
-                                if (NewCurrentAlbum != null)
-                                {
-                                    NewCurrentAlbum(na1);
-                                }
                                 break;
                             case MessageCommand.Status:
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
@@ -118,11 +116,16 @@ namespace RecordRemoteClientApp.Data
                             case MessageCommand.Sync:
                                 if (!mh.SourceAddress.Equals(ThisIpAddress))
                                 {
-                                    int[] bKey = MessageParser.ParseIntKey(bytes, ref pointer);
-                                    if (SyncMessage != null)
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
                                     {
-                                        SyncMessage(bKey);
-                                    }
+                                        int[] bKey = MessageParser.ParseKey(bytes, ref pointer);
+                                        if (SyncMessage != null)
+                                        {
+
+                                            SyncMessage(bKey);
+
+                                        }
+                                    }));
                                 }
                                 break;
                             case MessageCommand.Scan:
@@ -151,73 +154,97 @@ namespace RecordRemoteClientApp.Data
                                 {
                                     if (SetPowerStatus != null)
                                     {
-                                        PowerStatus ps = (PowerStatus)mh.Command - 14;
-                                        PowerStatusType = ps;
-                                        SetPowerStatus(ps);
+                                        Application.Current.Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            PowerStatus ps = (PowerStatus)mh.Command - 14;
+                                            PowerStatusType = ps;
+                                            SetPowerStatus(ps);
+                                        }));
                                     }
                                 }
                                 break;
                             case MessageCommand.PositionUpdate:
                                 if (EventPositionUpdate != null)
                                 {
-                                    EventPositionUpdate(MessageParser.GetByte(bytes, ref pointer));
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        EventPositionUpdate(MyConverters.BytesToInt(MessageParser.GetByte(bytes, ref pointer), MessageParser.GetByte(bytes, ref pointer)));
+                                    }));
                                 }
                                 break;
                             case MessageCommand.AtBeginning:
                                 if (EventPositionUpdate != null)
                                 {
-                                    EventPositionUpdate(null);
+                                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        EventPositionUpdate(null);
+                                    }));
                                 }
                                 break;
                             case MessageCommand.Play:
-                                if (SetBusyStatus != null)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    SetBusyStatus((BusyStatus)mh.Command);
-                                    BusyStatusType = (BusyStatus)mh.Command;
-                                }
-                                if (EventPlayingUpdate != null)
-                                {
-                                    EventPlayingUpdate(true);
-                                }
+                                    if (SetBusyStatus != null)
+                                    {
+                                        SetBusyStatus((BusyStatus)mh.Command);
+                                        BusyStatusType = (BusyStatus)mh.Command;
+                                    }
+                                    if (EventPlayingUpdate != null)
+                                    {
+                                        EventPlayingUpdate(true);
+                                    }
+                                }));
                                 break;
                             case MessageCommand.GoToTrack:
-                                if (SetBusyStatus != null)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    SetBusyStatus((BusyStatus)mh.Command);
-                                    BusyStatusType = (BusyStatus)mh.Command;
-                                }
-                                if (EventPlayingUpdate != null)
-                                {
-                                    EventPlayingUpdate(false);
-                                }
+                                    if (SetBusyStatus != null)
+                                    {
+                                        SetBusyStatus((BusyStatus)mh.Command);
+                                        BusyStatusType = (BusyStatus)mh.Command;
+                                    }
+                                    if (EventPlayingUpdate != null)
+                                    {
+                                        EventPlayingUpdate(false);
+                                    }
+                                }));
                                 break;
                             case MessageCommand.Pause:
-                                if (SetBusyStatus != null)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    SetBusyStatus((BusyStatus)mh.Command);
-                                    BusyStatusType = (BusyStatus)mh.Command;
-                                }
-                                if (EventPlayingUpdate != null)
-                                {
-                                    EventPlayingUpdate(false);
-                                }
+                                    if (SetBusyStatus != null)
+                                    {
+                                        SetBusyStatus((BusyStatus)mh.Command);
+                                        BusyStatusType = (BusyStatus)mh.Command;
+                                    }
+                                    if (EventPlayingUpdate != null)
+                                    {
+                                        EventPlayingUpdate(false);
+                                    }
+                                }));
                                 break;
                             case MessageCommand.Stop:
                             case MessageCommand.sScan:
                             case MessageCommand.Unknown:
-                            case MessageCommand.Ready: 
-                                if (SetBusyStatus != null)
+                            case MessageCommand.Ready:
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    SetBusyStatus((BusyStatus)mh.Command);
-                                    BusyStatusType = (BusyStatus)mh.Command;
-                                }
+                                    if (SetBusyStatus != null)
+                                    {
+                                        SetBusyStatus((BusyStatus)mh.Command);
+                                        BusyStatusType = (BusyStatus)mh.Command;
+                                    }
+                                }));
                                 break;
                             default:
-                                if (SetBusyStatus != null)
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
-                                    SetBusyStatus((BusyStatus)mh.Command);
-                                    BusyStatusType = (BusyStatus)mh.Command;
-                                }
+                                    if (SetBusyStatus != null)
+                                    {
+                                        SetBusyStatus((BusyStatus)mh.Command);
+                                        BusyStatusType = (BusyStatus)mh.Command;
+                                    }
+                                }));
                                 break;
                         }
                     }

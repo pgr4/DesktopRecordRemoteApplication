@@ -29,14 +29,14 @@ namespace RecordRemoteClientApp.Views
         {
             InitializeComponent();
 
-            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative)); 
+            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative));
         }
 
         public AutoAlbumTrackAssociationView(NewAlbum na)
         {
             InitializeComponent();
 
-            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative)); 
+            Icon = new BitmapImage(new Uri("../../ProjectImages/record-player.jpg", UriKind.Relative));
 
             DataContext = new AutoAlbumTrackAssociationViewModel(na);
         }
@@ -75,7 +75,7 @@ namespace RecordRemoteClientApp.Views
         private void SwitchButton_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
-            
+
             vm.ChangeType();
         }
 
@@ -104,7 +104,7 @@ namespace RecordRemoteClientApp.Views
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
             if (vm.MethodLevel == 1)
             {
-                GenericPictureName gpn = ((ListBoxItem) sender).Content as GenericPictureName;
+                GenericPictureName gpn = ((ListBoxItem)sender).Content as GenericPictureName;
                 vm.SetSelectedArtist(gpn);
             }
             else if (vm.MethodLevel == 2)
@@ -176,10 +176,15 @@ namespace RecordRemoteClientApp.Views
                 {
                     //Get the listboxitem from the item
                     ListBoxItem lbi = songListBox.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
-                    //Set the background if lbi is not the selected listboxitem
-                    if (!lbi.IsSelected)
+
+                    //TODO: This was null once
+                    if (lbi != null)
                     {
-                        lbi.Background = Brushes.Cyan;
+                        //Set the background if lbi is not the selected listboxitem
+                        if (!lbi.IsSelected)
+                        {
+                            lbi.Background = Brushes.Cyan;
+                        }
                     }
                 }
             }
@@ -190,8 +195,11 @@ namespace RecordRemoteClientApp.Views
                 {
                     //Get the listboxitem from the item
                     ListBoxItem lbi = songListBox.ItemContainerGenerator.ContainerFromItem(item) as ListBoxItem;
-                    //Set the background
-                    lbi.Background = Brushes.Transparent;
+                    if (lbi != null)
+                    {
+                        //Set the background
+                        lbi.Background = Brushes.Transparent;
+                    }
                 }
             }
         }

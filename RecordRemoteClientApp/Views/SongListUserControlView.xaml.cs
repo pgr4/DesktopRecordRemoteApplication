@@ -32,16 +32,6 @@ namespace RecordRemoteClientApp.Views
 
         }
 
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            MainViewModel vm = DataContext as MainViewModel;
-
-            TextBox txtBox = (TextBox)sender;
-            Song s = (Song)txtBox.Tag;
-
-            vm.UpdateSongDatabase(s);
-        }
-
         private void ListViewDoubleClick(object sender, MouseButtonEventArgs e)
         {
 

@@ -1,4 +1,5 @@
 ﻿using RecordRemoteClientApp.Enumerations;
+using RecordRemoteClientApp.Misc;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -60,27 +61,6 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        //TODO:REMOVE
-        public static void SendStatusMessage()
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader(3);
-
-                s.SendTo(header, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
         public static void SendSyncMessage(int[] b)
         {
             try
@@ -93,12 +73,23 @@ namespace RecordRemoteClientApp.Data
 
                 byte[] header = GetHeader(5);
 
-                byte[] message = new byte[header.Length + b.Length + 6];
+                byte[] message = new byte[header.Length + (b.Length * 2) + 6];
 
                 header.CopyTo(message, 0);
-                b.CopyTo(message, header.Length);
 
-                for (int i = header.Length + b.Length; i < message.Length; i++)
+                byte[] newKey = new byte[b.Length*2];
+                int index = -1;
+
+                for (int i = 0; i < b.Length; i++)
+                {
+                   var x = BitConverter.GetBytes(b[i]);
+                   newKey[++index] = x[1];
+                   newKey[++index] = x[0];
+                }
+
+                newKey.CopyTo(message, header.Length);
+
+                for (int i = header.Length + newKey.Length; i < message.Length; i++)
                 {
                     message[i] = 111;
                 }
@@ -175,7 +166,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void GoToTrackMessage(byte b)
+        public static void GoToTrackMessage(byte msb,byte lsb)
         {
             try
             {
@@ -187,9 +178,10 @@ namespace RecordRemoteClientApp.Data
 
                 byte[] header = GetHeader((byte)MessageCommand.GoToTrack);
 
-                byte[] message = new byte[header.Length + 1];
+                byte[] message = new byte[header.Length + 2];
                 header.CopyTo(message, 0);
-                message[header.Length] = b;
+                message[message.Length - 2] = msb;
+                message[message.Length - 1] = lsb;
 
                 s.SendTo(message, ep);
             }
@@ -199,7 +191,7 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void QueueGoToTrackMessage(byte b)
+        public static void QueueGoToTrackMessage(byte msb, byte lsb)
         {
             try
             {
@@ -211,31 +203,13 @@ namespace RecordRemoteClientApp.Data
 
                 byte[] header = GetHeader((byte)MessageCommand.QueueGoToTrack);
 
-                byte[] message = new byte[header.Length + 1];
+                byte[] message = new byte[header.Length + 2];
                 header.CopyTo(message, 0);
-                message[header.Length] = b;
+
+                message[message.Length - 2] = msb;
+                message[message.Length - 1] = lsb;
 
                 s.SendTo(message, ep);
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
-
-        public static void GoToBeginningMessage()
-        {
-            try
-            {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-                IPAddress broadcast = IPAddress.Parse("192.168.1.255");
-
-                IPEndPoint ep = new IPEndPoint(broadcast, 30003);
-
-                byte[] header = GetHeader((byte)MessageCommand.MediaGoToBeginning);
-
-                s.SendTo(header, ep);
             }
             catch (Exception e)
             {

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:RecordRemoteClientApp.ViewModel"
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-        Title="Settings" Height="300" Width="300">
+        Title="Settings" Height="150" Width="300" ResizeMode="NoResize">
     
     <Window.DataContext>
         <vm:SettingsViewModel></vm:SettingsViewModel>
@@ -14,6 +14,7 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition ></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -27,5 +28,9 @@
 
         <Label Grid.Row="2" Grid.Column="0">Highlight Color</Label>
         <wpfTool:ColorPicker Grid.Row="2" Grid.Column="1" SelectedColor="{Binding HighlightColor}"></wpfTool:ColorPicker>
+
+        <Button Grid.Row="4" Grid.Column="0" Margin="5" Click="AcceptButton_Click">Accept</Button>
+        <Button Grid.Row="4" Grid.Column="1" Margin="5" Click="RejectButton_Click">Reject</Button>
+        
     </Grid>
 </Window>

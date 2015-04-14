@@ -1,4 +1,5 @@
 ﻿using RecordRemoteClientApp.Enumerations;
+using RecordRemoteClientApp.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,7 @@ namespace RecordRemoteClientApp.Models
         public static NewAlbum ParseNewAlbum(byte[] b, ref int pointer)
         {
             NewAlbum na = new NewAlbum();
-            //na.Key = ParseKey(b, ref pointer);
-            //na.Breaks = na.Key.Length;
-            na.Key = ParseIntKey(b, ref pointer);
+            na.Key = ParseKey(b, ref pointer);
             na.Breaks = na.Key.Length;
             return na;
         }
@@ -94,7 +93,7 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
-        public static int[] ParseIntKey(byte[] bytes, ref int pointer)
+        public static int[] ParseKey(byte[] bytes, ref int pointer)
         {
             int endingPoint = 0;
             for (int i = pointer; i < bytes.Length; i++)
@@ -107,32 +106,12 @@ namespace RecordRemoteClientApp.Models
                 }
             }
 
-            int[] ret = new int[endingPoint/2];
-            for (int i = 0; i < endingPoint/2; i++)
+            int[] ret = new int[endingPoint / 2];
+            for (int i = 0; i < endingPoint / 2; i++)
             {
-                ret[i] = BitConverter.ToInt32(new byte[] { bytes[pointer++], bytes[pointer++], 0, 0 }, 0);
-            }
-
-            return ret;
-        }
-
-        public static byte[] ParseKey(byte[] bytes, ref int pointer)
-        {
-            int endingPoint = 0;
-            for (int i = pointer; i < bytes.Length; i++)
-            {
-                if (bytes[i] == 111 && bytes[i + 1] == 111 && bytes[i + 2] == 111 &&
-                    bytes[i + 3] == 111 && bytes[i + 4] == 111 && bytes[i + 5] == 111)
-                {
-                    endingPoint = i - pointer;
-                    break;
-                }
-            }
-
-            byte[] ret = new byte[endingPoint];
-            for (int i = 0; i < endingPoint; i++)
-            {
-                ret[i] = bytes[pointer++];
+                byte firstByte = bytes[pointer++];
+                byte secondByte = bytes[pointer++];
+                ret[i] = BitConverter.ToInt32(new byte[] { secondByte,firstByte, 0, 0, }, 0);
             }
 
             return ret;

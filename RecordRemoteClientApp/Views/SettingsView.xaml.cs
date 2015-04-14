@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecordRemoteClientApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,18 @@ namespace RecordRemoteClientApp.Views
         public SettingsView()
         {
             InitializeComponent();
+        }
+
+        private void AcceptButton_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = DataContext as SettingsViewModel;
+            vm.Set();
+            Close();
+        }
+
+        private void RejectButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

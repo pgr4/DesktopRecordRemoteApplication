@@ -24,7 +24,7 @@ namespace RecordRemoteClientApp.Converters
                     case BusyStatus.Unknown:
                         return new SolidColorBrush(Colors.Red);
                     default:
-                        return new SolidColorBrush(Colors.Yellow);
+                        return new SolidColorBrush(Colors.Orange);
                 }
             }
             else if(t == typeof(PowerStatus))
