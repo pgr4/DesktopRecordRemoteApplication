@@ -5,6 +5,7 @@
         xmlns:local="clr-namespace:RecordRemoteClientApp.Views"
         x:Class="RecordRemoteClientApp.Views.AutoAlbumTrackAssociationView"
         Title="Identify New Album" SizeToContent="WidthAndHeight" MaxWidth="600"
+        xmlns:s="clr-namespace:RecordRemoteClientApp.Misc"
         AllowDrop="True"
         Drop="AlbumTrackAssociationView_OnDrop"
         DragOver="AlbumTrackAssociationView_OnDragOver"
@@ -88,14 +89,14 @@
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" TargetName="Border">
                                                 <Setter.Value>
-                                                    <SolidColorBrush Color="Aqua"/>
+                                                    <SolidColorBrush Color="{Binding Source={x:Static s:Settings.Instance},Path=SecondaryColor}"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" TargetName="Border">
                                                 <Setter.Value>
-                                                    <SolidColorBrush Color="Aqua" Opacity="0.25"/>
+                                                    <SolidColorBrush Color="{Binding Source={x:Static s:Settings.Instance},Path=HighlightColor}"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>
@@ -167,14 +168,14 @@
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" TargetName="Border">
                                                 <Setter.Value>
-                                                    <SolidColorBrush Color="Aqua"/>
+                                                    <SolidColorBrush Color="{Binding Source={x:Static s:Settings.Instance},Path=SecondaryColor}"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" TargetName="Border">
                                                 <Setter.Value>
-                                                    <SolidColorBrush Color="Aqua" Opacity="0.25"/>
+                                                    <SolidColorBrush Color="{Binding Source={x:Static s:Settings.Instance},Path=HighlightColor}"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>
