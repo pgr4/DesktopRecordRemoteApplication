@@ -25,6 +25,8 @@ namespace RecordRemoteClientApp.Enumerations
         On = 15,
         Off = 16,
 
+        RequestSync = 18,
+
         Unknown = 20,
         Ready = 21,
         Play = 22,

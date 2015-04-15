@@ -247,6 +247,8 @@ namespace RecordRemoteClientApp.ViewModel
 
         #endregion
 
+        public static int[] Key = null;
+
         #region Constructors
 
         public MainViewModel()
@@ -279,6 +281,7 @@ namespace RecordRemoteClientApp.ViewModel
 
             Sender.SendGenericMessage(MessageCommand.Status);
             Sender.SendGenericMessage(MessageCommand.GetPower);
+            Sender.SendGenericMessage(MessageCommand.RequestSync);
 
             IsPlaying = false;
 
@@ -416,6 +419,8 @@ namespace RecordRemoteClientApp.ViewModel
 
                     Sender.SendSyncMessage(na.Key);
 
+                    Key = na.Key;
+
                     return;
                 }
             }
@@ -506,6 +511,8 @@ namespace RecordRemoteClientApp.ViewModel
                     RefreshWebApi();
 
                     Sender.SendSyncMessage(na.Key);
+
+                    Key = na.Key;
                 }
             };
         }
@@ -731,6 +738,8 @@ namespace RecordRemoteClientApp.ViewModel
             RefreshWebApi();
 
             Sender.SendSyncMessage(song.Key);
+
+            Key = song.Key;
         }
 
         /// <summary>

@@ -15,7 +15,6 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="5"></RowDefinition>
-            <!--78-->
             <RowDefinition></RowDefinition>
             <RowDefinition Height="5"></RowDefinition>
         </Grid.RowDefinitions>
@@ -24,11 +23,9 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="126"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" MinWidth="126"></ColumnDefinition><!--126-->
                 <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="126"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
@@ -45,7 +42,7 @@
 
             </Grid>
 
-            <Grid Grid.Column="3">
+            <Grid Grid.ColumnSpan="5" HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>

@@ -8,7 +8,7 @@ namespace RecordRemoteClientApp.Data
 {
     public static class Sender
     {
-        private static byte[] GetHeader(byte command)
+        private static byte[] MakeHeader(byte command)
         {
             byte[] ret = new byte[15];
             int i = 0;
@@ -51,7 +51,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)bs);
+                byte[] header = MakeHeader((byte)bs);
 
                 s.SendTo(header, ep);
             }
@@ -71,7 +71,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader(5);
+                byte[] header = MakeHeader(5);
 
                 byte[] message = new byte[header.Length + (b.Length * 2) + 6];
 
@@ -112,7 +112,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)mc);
+                byte[] header = MakeHeader((byte)mc);
 
                 s.SendTo(header, ep);
             }
@@ -122,9 +122,6 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        /// <summary>
-        /// Lower Command
-        /// </summary>
         public static void PlayMessage()
         {
             try
@@ -135,7 +132,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.MediaPlay);
+                byte[] header = MakeHeader((byte)MessageCommand.MediaPlay);
 
                 s.SendTo(header, ep);
             }
@@ -144,7 +141,6 @@ namespace RecordRemoteClientApp.Data
 
             }
         }
-
 
         public static void StopMessage()
         {
@@ -156,7 +152,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.MediaStop);
+                byte[] header = MakeHeader((byte)MessageCommand.MediaStop);
 
                 s.SendTo(header, ep);
             }
@@ -176,7 +172,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.GoToTrack);
+                byte[] header = MakeHeader((byte)MessageCommand.GoToTrack);
 
                 byte[] message = new byte[header.Length + 2];
                 header.CopyTo(message, 0);
@@ -201,7 +197,7 @@ namespace RecordRemoteClientApp.Data
 
                 IPEndPoint ep = new IPEndPoint(broadcast, 30003);
 
-                byte[] header = GetHeader((byte)MessageCommand.QueueGoToTrack);
+                byte[] header = MakeHeader((byte)MessageCommand.QueueGoToTrack);
 
                 byte[] message = new byte[header.Length + 2];
                 header.CopyTo(message, 0);

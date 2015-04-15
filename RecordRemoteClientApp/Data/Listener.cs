@@ -1,6 +1,7 @@
 ﻿using RecordRemoteClientApp.Enumerations;
 using RecordRemoteClientApp.Misc;
 using RecordRemoteClientApp.Models;
+using RecordRemoteClientApp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq;
@@ -121,11 +122,17 @@ namespace RecordRemoteClientApp.Data
                                         int[] bKey = MessageParser.ParseKey(bytes, ref pointer);
                                         if (SyncMessage != null)
                                         {
-
                                             SyncMessage(bKey);
-
                                         }
                                     }));
+                                }
+                                break;
+                            case MessageCommand.RequestSync:
+                                if (!mh.SourceAddress.Equals(ThisIpAddress))
+                                {
+                                    if (MainViewModel.Key != null) {
+                                        Sender.SendSyncMessage(MainViewModel.Key);
+                                    }
                                 }
                                 break;
                             case MessageCommand.Scan:
@@ -280,6 +287,5 @@ namespace RecordRemoteClientApp.Data
 
             ThisIpAddress = IPAddress.Parse(localIP);
         }
-
     }
 }
