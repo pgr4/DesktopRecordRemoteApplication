@@ -28,9 +28,27 @@ namespace RecordRemoteClientApp.Misc
             return ret;
         }
 
-        public static int BytesToInt(byte fByte, byte sByte) 
+        public static int BytesToInt(byte fByte, byte sByte)
         {
             return BitConverter.ToInt32(new byte[] { sByte, fByte, 0, 0, }, 0);
+        }
+
+        public static bool IsKeyMatch(int[] first, int[] second)
+        {
+            if (first.Count() != second.Count())
+            {
+                return false;
+            }
+
+            for (int i = 0; i < first.Count(); i++)
+            {
+                if (Math.Abs(first[i] - second[i]) > 5)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

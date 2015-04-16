@@ -121,7 +121,6 @@
     <Compile Include="Data\Sender.cs" />
     <Compile Include="Misc\Enumerations.cs" />
     <Compile Include="Misc\MyConverters.cs" />
-    <Compile Include="Misc\NotifyPropertyChangedInvocator.cs" />
     <Compile Include="Misc\Settings.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\AssociationPicture.cs" />

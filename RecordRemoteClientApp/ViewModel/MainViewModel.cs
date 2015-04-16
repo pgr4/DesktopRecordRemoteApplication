@@ -247,7 +247,11 @@ namespace RecordRemoteClientApp.ViewModel
 
         #endregion
 
+        #region Static Members
+
         public static int[] Key = null;
+
+        #endregion
 
         #region Constructors
 
@@ -378,6 +382,25 @@ namespace RecordRemoteClientApp.ViewModel
             command.ExecuteNonQuery();
         }
 
+        public void DeleteDatabaseEntrys(int[] key)
+        {
+            SQLiteCommand command;
+            string sql = "delete from tblSong where Key=\"" + MyConverters.KeyToString(key) + "\"";
+            command = new SQLiteCommand(sql, dbConnection);
+            command.ExecuteNonQuery();
+
+            SQLiteCommand command1;
+            string sql1 = "delete from tblAlbum where Key=\"" + MyConverters.KeyToString(key) + "\"";
+            command1 = new SQLiteCommand(sql1, dbConnection);
+            command1.ExecuteNonQuery();
+
+            RefreshDatabaseTables();
+
+            RefreshSongList();
+            
+            RefreshWebApi();
+        }
+
         private void StartDataListener()
         {
             Thread t = new Thread(DataListener.Listen);
@@ -399,11 +422,12 @@ namespace RecordRemoteClientApp.ViewModel
             //Check if it isn't a new album
             foreach (var a in DbAlbums)
             {
-                if (MyConverters.StringToKey(a.Key).SequenceEqual<int>(na.Key))
+                //if (MyConverters.StringToKey(a.Key).SequenceEqual<int>(na.Key))
+                if (MyConverters.IsKeyMatch(MyConverters.StringToKey(a.Key), na.Key))
                 {
                     Application.Current.Dispatcher.Invoke((Action)delegate
                     {
-                        RefreshCurrentSongList(na.Key);
+                        RefreshCurrentSongList(MyConverters.StringToKey(a.Key));
 
                         CurrentAlbum = new Album(a);
 
@@ -417,9 +441,9 @@ namespace RecordRemoteClientApp.ViewModel
                         RaisePropertyChanged("CurrentSongList");
                     });
 
-                    Sender.SendSyncMessage(na.Key);
+                    Sender.SendSyncMessage(MyConverters.StringToKey(a.Key));
 
-                    Key = na.Key;
+                    Key = MyConverters.StringToKey(a.Key);
 
                     return;
                 }

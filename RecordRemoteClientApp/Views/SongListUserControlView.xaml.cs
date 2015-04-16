@@ -43,5 +43,12 @@ namespace RecordRemoteClientApp.Views
             MainViewModel vm = DataContext as MainViewModel;
             vm.SetCurrentAlbum(cm.DataContext as Song);
         }
+
+        private void DeleteMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem cm = (MenuItem)sender;
+            MainViewModel vm = DataContext as MainViewModel;
+            vm.DeleteDatabaseEntrys(((Song)cm.DataContext).Key);
+        }
     }
 }

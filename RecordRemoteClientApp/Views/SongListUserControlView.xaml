@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <ContextMenu x:Key="ContextMenuKey">
             <MenuItem Header="Set as Current Album" Click="MenuItem_OnClick"/>
+            <MenuItem Header="Delete Album" Click="DeleteMenuItem_OnClick"/>
         </ContextMenu>
 
         <Style TargetType="{x:Type GridViewColumnHeader}">
