@@ -10,6 +10,9 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Unused
+    /// </summary>
     public class VisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

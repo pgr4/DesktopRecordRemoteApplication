@@ -9,6 +9,9 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// If value is null then return 0 else return 2
+    /// </summary>
     class BorderConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

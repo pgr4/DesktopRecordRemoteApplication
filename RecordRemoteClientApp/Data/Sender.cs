@@ -6,8 +6,16 @@ using System.Net.Sockets;
 
 namespace RecordRemoteClientApp.Data
 {
+    /// <summary>
+    /// Purpose is to send out UDP messages
+    /// </summary>
     public static class Sender
     {
+        /// <summary>
+        /// Creates generic header with the command
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         private static byte[] MakeHeader(byte command)
         {
             byte[] ret = new byte[15];
@@ -41,6 +49,10 @@ namespace RecordRemoteClientApp.Data
             return ret;
         }
 
+        /// <summary>
+        /// Sends a message based on the BusyStatus given
+        /// </summary>
+        /// <param name="bs"></param>
         public static void SendStatusMessage(BusyStatus bs)
         {
             try
@@ -61,6 +73,10 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        /// <summary>
+        /// Purpose is to send out a message with the current key value for other apps to update
+        /// </summary>
+        /// <param name="b"></param>
         public static void SendSyncMessage(int[] b)
         {
             try
@@ -77,14 +93,14 @@ namespace RecordRemoteClientApp.Data
 
                 header.CopyTo(message, 0);
 
-                byte[] newKey = new byte[b.Length*2];
+                byte[] newKey = new byte[b.Length * 2];
                 int index = -1;
 
                 for (int i = 0; i < b.Length; i++)
                 {
-                   var x = BitConverter.GetBytes(b[i]);
-                   newKey[++index] = x[1];
-                   newKey[++index] = x[0];
+                    var x = BitConverter.GetBytes(b[i]);
+                    newKey[++index] = x[1];
+                    newKey[++index] = x[0];
                 }
 
                 newKey.CopyTo(message, header.Length);
@@ -102,6 +118,10 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        /// <summary>
+        /// For all commands that dont require a message body
+        /// </summary>
+        /// <param name="mc"></param>
         public static void SendGenericMessage(MessageCommand mc)
         {
             try
@@ -122,6 +142,9 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        /// <summary>
+        /// Sends out a Play message to the arduino
+        /// </summary>
         public static void PlayMessage()
         {
             try
@@ -142,6 +165,9 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        /// <summary>
+        /// Sends out a Pause message to the arduino
+        /// </summary>
         public static void StopMessage()
         {
             try
@@ -162,7 +188,10 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
-        public static void GoToTrackMessage(byte msb,byte lsb)
+        /// <summary>
+        /// Sends out message for the arduino to go to the currentlocation given in 2 byte int
+        /// </summary>
+        public static void GoToTrackMessage(byte msb, byte lsb)
         {
             try
             {
@@ -187,6 +216,10 @@ namespace RecordRemoteClientApp.Data
             }
         }
 
+        /// <summary>
+        /// Sends out message for the arduino to go to the currentlocation given in 2 byte int
+        /// Also updates all other apps
+        /// </summary>
         public static void QueueGoToTrackMessage(byte msb, byte lsb)
         {
             try

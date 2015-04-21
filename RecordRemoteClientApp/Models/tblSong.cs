@@ -2,6 +2,9 @@
 
 namespace RecordRemoteClientApp.Models
 {
+    /// <summary>
+    /// Database representation of a song
+    /// </summary>
     [Table(Name = "tblSong")]
     public class tblSong
     {

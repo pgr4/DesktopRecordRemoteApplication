@@ -9,6 +9,10 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Displays opposite of current PowerStatus
+    /// Acts as a switch
+    /// </summary>
     public class InversePowerConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

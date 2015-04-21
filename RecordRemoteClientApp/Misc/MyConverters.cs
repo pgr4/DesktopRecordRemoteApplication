@@ -8,7 +8,11 @@ namespace RecordRemoteClientApp.Misc
 {
     static class MyConverters
     {
-
+        /// <summary>
+        /// Convers a csv string of ints to int array
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static int[] StringToKey(string key)
         {
             string[] tokens = key.Split(',');
@@ -16,6 +20,11 @@ namespace RecordRemoteClientApp.Misc
             return Array.ConvertAll<string, int>(tokens, int.Parse);
         }
 
+        /// <summary>
+        /// Converts int array to csv of ints
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static string KeyToString(int[] key)
         {
             string ret = key[0].ToString();
@@ -28,11 +37,23 @@ namespace RecordRemoteClientApp.Misc
             return ret;
         }
 
+        /// <summary>
+        /// Convers two bytes to an int value
+        /// </summary>
+        /// <param name="fByte"></param>
+        /// <param name="sByte"></param>
+        /// <returns></returns>
         public static int BytesToInt(byte fByte, byte sByte)
         {
             return BitConverter.ToInt32(new byte[] { sByte, fByte, 0, 0, }, 0);
         }
 
+        /// <summary>
+        /// Matches to int arrays based on their proximity
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
         public static bool IsKeyMatch(int[] first, int[] second)
         {
             if (first.Count() != second.Count())

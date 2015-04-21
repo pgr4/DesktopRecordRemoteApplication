@@ -255,6 +255,13 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Constructors
 
+        /// <summary>
+        /// Constructor
+        /// Initialize or get database
+        /// Get Settings
+        /// Send out GetStatus GetPower and RequestSync Messages
+        /// Refresh our TotalList
+        /// </summary>
         public MainViewModel()
         {
             SongList = new ObservableCollection<Song>();
@@ -356,6 +363,15 @@ namespace RecordRemoteClientApp.ViewModel
             DbAlbums = context.GetTable<tblAlbum>();
         }
 
+        /// <summary>
+        /// Method for adding an album to the database
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="album"></param>
+        /// <param name="artist"></param>
+        /// <param name="calculated"></param>
+        /// <param name="breaks"></param>
+        /// <param name="image"></param>
         private void AddAlbumToDatabase(int[] key, string album, string artist, bool calculated, int breaks, byte[] image)
         {
             string sql;
@@ -369,6 +385,16 @@ namespace RecordRemoteClientApp.ViewModel
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Method for adding song to database
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="title"></param>
+        /// <param name="artist"></param>
+        /// <param name="album"></param>
+        /// <param name="breakNum"></param>
+        /// <param name="breakLocStart"></param>
+        /// <param name="breakLocEnd"></param>
         private void AddSongToDatabase(int[] key, string title, string artist, string album, int breakNum, int breakLocStart, int breakLocEnd)
         {
             string sql;
@@ -382,6 +408,10 @@ namespace RecordRemoteClientApp.ViewModel
             command.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Will delete entries in song and album database with matching key
+        /// </summary>
+        /// <param name="key"></param>
         public void DeleteDatabaseEntrys(int[] key)
         {
             SQLiteCommand command;
@@ -401,6 +431,9 @@ namespace RecordRemoteClientApp.ViewModel
             RefreshWebApi();
         }
 
+        /// <summary>
+        /// Function for starting UDP Listener
+        /// </summary>
         private void StartDataListener()
         {
             Thread t = new Thread(DataListener.Listen);
@@ -541,6 +574,11 @@ namespace RecordRemoteClientApp.ViewModel
             };
         }
 
+        /// <summary>
+        /// Returns the album art in a byte array or if null gets the default album art
+        /// </summary>
+        /// <param name="ls"></param>
+        /// <returns></returns>
         private byte[] GetAlbumArt(List<AssociationPicture> ls)
         {
             var item = (from i in ls
@@ -557,6 +595,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Upon getting a sync message refresh our song lists and go fetch album info from database
+        /// </summary>
+        /// <param name="key"></param>
         private void DataListener_SyncMessage(int[] key)
         {
             RefreshCurrentSongList(key);
@@ -585,12 +627,20 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Upon getting a busy message update our current busy state
+        /// </summary>
+        /// <param name="bs"></param>
         private void DataListener_SetBusyStatus(BusyStatus bs)
         {
             BusyType = bs;
             BStatus = bs.ToDescriptionString();
         }
 
+        /// <summary>
+        /// Upon getting a power message update our current power state
+        /// </summary>
+        /// <param name="bs"></param>
         private void DataListener_SetPowerStatus(PowerStatus ps)
         {
             PowerType = ps;
@@ -608,6 +658,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Upon getting an update message update the current playing song
+        /// </summary>
+        /// <param name="loc"></param>
         private void DataListener_EventPositionUpdate(int? loc)
         {
             if (QueueList.Count != 0)
@@ -645,6 +699,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Upon getting a playing update update whether we are playing or not
+        /// </summary>
+        /// <param name="b"></param>
         private void DataListener_PlayingUpdate(bool b)
         {
             IsPlaying = b;
@@ -656,6 +714,9 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Media Controls
 
+        /// <summary>
+        /// Send a command to drop tonearm
+        /// </summary>
         public void Play()
         {
             if (SelectedSong != null)
@@ -679,11 +740,18 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Send a command to lift tonearm
+        /// </summary>
         public void Pause()
         {
             Sender.StopMessage();
         }
 
+        /// <summary>
+        /// If current song is last song then send a gototrack for first song
+        /// else send a gototrack for next song
+        /// </summary>
         public void Skip()
         {
             if (CurrentSong != null)
@@ -704,6 +772,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// If current song is first song then send a gototrack for first song
+        /// else send a gotottrack for previous song
+        /// </summary>
         public void Rewind()
         {
             if (CurrentSong != null)
@@ -728,6 +800,9 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region misc
 
+        /// <summary>
+        /// Method for getting the saved settings
+        /// </summary>
         private void GetSettings()
         {
             foreach (var item in File.ReadAllLines(@"C:\RecordWebApi\settings.txt"))
@@ -753,6 +828,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method to set a current album manually from context menu in the TotalList
+        /// </summary>
+        /// <param name="song"></param>
         public void SetCurrentAlbum(Song song)
         {
             RefreshCurrentSongList(song.Key);
@@ -838,6 +917,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Add a Song s to QueueList
+        /// </summary>
+        /// <param name="s"></param>
         public void AddToQueue(Song s)
         {
             QueueList.Add(s);

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace RecordRemoteClientApp.Enumerations
 {
+    /// <summary>
+    /// Types of Header commands we will be receiving
+    /// </summary>
     public enum MessageCommand
     {
         None = 0,
@@ -43,6 +46,9 @@ namespace RecordRemoteClientApp.Enumerations
         QueueGoToBeginning = 35
     }
 
+    /// <summary>
+    /// Power States
+    /// </summary>
     public enum PowerStatus
     {
         Unknown,
@@ -50,6 +56,10 @@ namespace RecordRemoteClientApp.Enumerations
         Off
     }
 
+    /// <summary>
+    /// Busy States
+    /// Can be converted from message command
+    /// </summary>
     public enum BusyStatus
     {
         [Description("Unknown")]
@@ -68,6 +78,9 @@ namespace RecordRemoteClientApp.Enumerations
         sScan = 26
     }
 
+    /// <summary>
+    /// Default queries
+    /// </summary>
     public enum QueryType
     {
         [Description("method=artist.search&artist=")]
@@ -78,6 +91,9 @@ namespace RecordRemoteClientApp.Enumerations
         AlbumInfo
     }
 
+    /// <summary>
+    /// To String Helper
+    /// </summary>
     public static class MyEnumExtensions
     {
         public static string ToDescriptionString(this QueryType val)

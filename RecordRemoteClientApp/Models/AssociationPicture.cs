@@ -4,6 +4,9 @@ using GalaSoft.MvvmLight;
 
 namespace RecordRemoteClientApp.Models
 {
+    /// <summary>
+    /// Purposes of holding the album art information
+    /// </summary>
     public class AssociationPicture : ViewModelBase
     {
         public AssociationPicture()

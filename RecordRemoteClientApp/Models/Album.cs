@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RecordRemoteClientApp.Misc;
 
 namespace RecordRemoteClientApp.Models
 {
+    /// <summary>
+    /// Album for purposes of binding to CurrentAlbumUserControl
+    /// </summary>
     public class Album : ViewModelBase
     {
         public Album()
@@ -20,18 +24,11 @@ namespace RecordRemoteClientApp.Models
         {
             Name = album.Album;
             Artist = album.Artist;
-            Key = StringToKey(album.Key);
+            Key = MyConverters.StringToKey(album.Key);
             Breaks = album.Breaks;
             Calculated = Convert.ToBoolean(album.Calculated);
             ID = album.Id;
             Image = album.Image;
-        }
-
-        private int[] StringToKey(string key)
-        {
-            string[] tokens = key.Split(',');
-
-            return Array.ConvertAll<string, int>(tokens, int.Parse);
         }
 
         private string name;

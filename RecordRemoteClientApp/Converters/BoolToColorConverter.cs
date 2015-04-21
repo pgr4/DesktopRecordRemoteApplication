@@ -5,6 +5,9 @@ using System.Windows.Media;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Converts a boolean to Red or Transparent
+    /// </summary>
     public class BoolToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -8,6 +8,9 @@ using RecordRemoteClientApp.Enumerations;
 
 namespace RecordRemoteClientApp.Models
 {
+    /// <summary>
+    /// Standard Message Header layout
+    /// </summary>
     public class MessageHeader
     {
         public MessageHeader()

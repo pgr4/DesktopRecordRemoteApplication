@@ -37,6 +37,11 @@ namespace RecordRemoteClientApp.Views
 
         }
 
+        /// <summary>
+        /// Set Current Album Menu Item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             MenuItem cm = (MenuItem)sender;
@@ -44,6 +49,11 @@ namespace RecordRemoteClientApp.Views
             vm.SetCurrentAlbum(cm.DataContext as Song);
         }
 
+        /// <summary>
+        /// Delete From Database Menu Item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             MenuItem cm = (MenuItem)sender;

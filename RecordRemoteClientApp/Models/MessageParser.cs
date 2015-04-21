@@ -15,8 +15,18 @@ namespace RecordRemoteClientApp.Models
         public int[] Key;
     }
 
+    /// <summary>
+    /// Class for parsing a UDP message
+    /// </summary>
     public class MessageParser
     {
+        /// <summary>
+        /// Method for parsing the Header
+        /// Return null if it is bad
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static MessageHeader ParseHeader(byte[] b, ref int pointer)
         {
             MessageHeader mh = new MessageHeader();
@@ -30,6 +40,12 @@ namespace RecordRemoteClientApp.Models
             return mh;
         }
 
+        /// <summary>
+        /// Method for parsing a New Album Message
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static NewAlbum ParseNewAlbum(byte[] b, ref int pointer)
         {
             NewAlbum na = new NewAlbum();
@@ -38,18 +54,36 @@ namespace RecordRemoteClientApp.Models
             return na;
         }
 
+        /// <summary>
+        /// Get byte increase pointer
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static byte GetByte(byte[] b, ref int pointer)
         {
             pointer += 1;
             return b[pointer - 1];
         }
 
+        /// <summary>
+        /// Get the type of Message Command
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static MessageCommand GetCommand(byte[] b, ref int pointer)
         {
             pointer += 1;
             return (MessageCommand)b[pointer - 1];
         }
 
+        /// <summary>
+        /// Parse the IP
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static IPAddress GetIP(byte[] b, ref int pointer)
         {
             byte[] arr = new byte[4];
@@ -63,12 +97,24 @@ namespace RecordRemoteClientApp.Models
             return s;
         }
 
+        /// <summary>
+        /// Unused
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static int GetInt(byte[] b, ref int pointer)
         {
             pointer += 1;
             return (int)b[pointer - 1];
         }
 
+        /// <summary>
+        /// Check to see if we are at the end of the header 
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static bool IsEndOfHeader(byte[] b, ref int pointer)
         {
             try
@@ -93,6 +139,12 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+        /// <summary>
+        /// Method for getting the key
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public static int[] ParseKey(byte[] bytes, ref int pointer)
         {
             int endingPoint = 0;

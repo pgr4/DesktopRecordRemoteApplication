@@ -6,6 +6,9 @@ using System.Windows.Media;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Converts bool to visibility false = vilsible
+    /// </summary>
     public class InverseBoolToVisibility : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -245,6 +245,11 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Constructors
 
+        /// <summary>
+        /// Constructor
+        /// Initialization
+        /// </summary>
+        /// <param name="na"></param>
         public AutoAlbumTrackAssociationViewModel(NewAlbum na)
         {
             MethodLevel = 0;
@@ -294,7 +299,11 @@ namespace RecordRemoteClientApp.ViewModel
             AlbumWidthType = new GridLength(1, GridUnitType.Auto);
 
             RaisePropertyChanged("ShowAlbumHint");
-            RaisePropAll();
+            RaisePropertyChanged("SongList");
+            RaisePropertyChanged("ArtistList");
+            RaisePropertyChanged("AlbumList");
+            RaisePropertyChanged("ArtistsVisible");
+            RaisePropertyChanged("AlbumsVisible");
         }
 
         #endregion
@@ -303,6 +312,9 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Reordering Songs
 
+        /// <summary>
+        /// Reset the items in SongList to reflect their current index
+        /// </summary>
         public void RenumberSongList()
         {
             foreach (SongAndNumber san in SongList)
@@ -311,6 +323,12 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method for deleting an item from SongList
+        /// Refuse to remove if it will put us under _numberOfSongs
+        /// Renumber List after delete
+        /// </summary>
+        /// <param name="item"></param>
         public void DeleteSong(SongAndNumber item)
         {
             if (SongList.Count == _numberOfSongs)
@@ -320,15 +338,17 @@ namespace RecordRemoteClientApp.ViewModel
 
             SongList.Remove(item);
 
-            foreach (SongAndNumber san in SongList)
-            {
-                san.Number = (SongList.IndexOf(san) + 1).ToString();
-            }
+            RenumberSongList();
 
             RaisePropertyChanged("SongList");
             RaisePropertyChanged("CanRemove");
         }
 
+        /// <summary>
+        /// Method for merging two tracks
+        /// Combines song titles and removes one from the list
+        /// Renumbers after
+        /// </summary>
         public void MergeSelectedTrack()
         {
             if (SongList.Count == _numberOfSongs)
@@ -386,6 +406,9 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Attempts to order SongList
+        /// </summary>
         public void CheckSongListNumbers()
         {
             SongList = new ObservableCollection<SongAndNumber>(SongList.OrderBy(i => i.Number).ToList());
@@ -402,6 +425,9 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Misc
 
+        /// <summary>
+        /// Method for changing from manual to automatic
+        /// </summary>
         public void ChangeType()
         {
             IsManual = !IsManual;
@@ -418,15 +444,6 @@ namespace RecordRemoteClientApp.ViewModel
                 AlbumWidthType = new GridLength(1, GridUnitType.Auto);
                 MethodLevel = SavedMethodLevel;
             }
-        }
-
-        public void RaisePropAll()
-        {
-            RaisePropertyChanged("SongList");
-            RaisePropertyChanged("ArtistList");
-            RaisePropertyChanged("AlbumList");
-            RaisePropertyChanged("ArtistsVisible");
-            RaisePropertyChanged("AlbumsVisible");
         }
 
         /// <summary>
@@ -520,6 +537,9 @@ namespace RecordRemoteClientApp.ViewModel
             RaisePropertyChanged("SongList");
         }
 
+        /// <summary>
+        /// Method for getting song information from user data
+        /// </summary>
         public void Browse()
         {
             try
@@ -584,6 +604,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method for removing albumart from the AlbumArtList
+        /// </summary>
+        /// <param name="imageBytes"></param>
         public void RemoveAlbumArt(byte[] imageBytes)
         {
             for (int i = 0; i < AlbumArtList.Count; i++)
@@ -608,6 +632,10 @@ namespace RecordRemoteClientApp.ViewModel
             RaisePropertyChanged("ShowAlbumHint");
         }
 
+        /// <summary>
+        /// Method for setting an item in AlbumArtList to selected
+        /// </summary>
+        /// <param name="imageBytes"></param>
         public void SelectAlbumArt(byte[] imageBytes)
         {
             foreach (var item in AlbumArtList)
@@ -620,6 +648,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method for setting an item in AlbumArtList to selected
+        /// </summary>
+        /// <param name="imageBytes"></param>
         public void SelectAlbumArt(AssociationPicture ap)
         {
             foreach (var item in AlbumArtList)
@@ -640,6 +672,10 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method for adding an item to AlbumArtList
+        /// </summary>
+        /// <param name="imageBytes"></param>
         public void AddAlbumArt(string loc)
         {
             try
@@ -662,6 +698,9 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Removes all album art that was added by the user
+        /// </summary>
         public void RemoveNonUserAddedAlbumArt()
         {
             AlbumArtList = new ObservableCollection<AssociationPicture>((
@@ -670,6 +709,11 @@ namespace RecordRemoteClientApp.ViewModel
                 select item).ToList());
         }
 
+        /// <summary>
+        /// Method for switching the level to the previous
+        /// album->artist
+        /// song->album
+        /// </summary>
         public void GoBack()
         {
             if (IsBrowsing)
@@ -707,6 +751,9 @@ namespace RecordRemoteClientApp.ViewModel
 
         #region Background Worker
 
+        /// <summary>
+        /// Run bwArtist_DoWork 
+        /// </summary>
         public void GetArtists(string searchString)
         {
             if (!_bwArtist.IsBusy)
@@ -716,6 +763,9 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Run bwAlbum_DoWork 
+        /// </summary>
         private void GetAlbums()
         {
             if (!_bwAlbum.IsBusy)
@@ -724,6 +774,9 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Run bwAlbumInfo_DoWork 
+        /// </summary>
         private void GetAlbumInfo()
         {
             if (!_bwAlbumInfo.IsBusy)
@@ -732,6 +785,11 @@ namespace RecordRemoteClientApp.ViewModel
             }
         }
 
+        /// <summary>
+        /// Thread work for getting artists from online source
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void bwArtist_DoWork(object sender, DoWorkEventArgs e)
         {
             MethodLevel += 10;
@@ -743,7 +801,7 @@ namespace RecordRemoteClientApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Thread work for getting albums from online source
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -758,7 +816,7 @@ namespace RecordRemoteClientApp.ViewModel
         }
 
         /// <summary>
-        /// 
+        /// Thread work for getting song info from online source
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

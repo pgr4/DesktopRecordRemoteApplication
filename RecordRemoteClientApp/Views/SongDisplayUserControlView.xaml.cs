@@ -27,24 +27,44 @@ namespace RecordRemoteClientApp.Views
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Back Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RewindButton_OnClick(object sender, RoutedEventArgs e)
         {
             MainViewModel vm = DataContext as MainViewModel;
             vm.Rewind();
         }
 
+        /// <summary>
+        /// Pause Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PauseButton_OnClick(object sender, RoutedEventArgs e)
         {
             MainViewModel vm = DataContext as MainViewModel;
             vm.Pause();
         }
 
+        /// <summary>
+        /// Play Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PlayButton_OnClick(object sender, RoutedEventArgs e)
         {
             MainViewModel vm = DataContext as MainViewModel;
             vm.Play();
         }
 
+        /// <summary>
+        /// Skip Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SkipButton_OnClick(object sender, RoutedEventArgs e)
         {
             MainViewModel vm = DataContext as MainViewModel;

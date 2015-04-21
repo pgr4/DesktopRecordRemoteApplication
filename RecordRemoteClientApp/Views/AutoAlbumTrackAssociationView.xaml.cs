@@ -45,12 +45,22 @@ namespace RecordRemoteClientApp.Views
 
         #region Methods
 
+        /// <summary>
+        /// Back Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BackButton_OnClick(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
             vm.GoBack();
         }
 
+        /// <summary>
+        /// Accept Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             if (((AutoAlbumTrackAssociationViewModel)DataContext).CanCloseWindow())
@@ -72,6 +82,11 @@ namespace RecordRemoteClientApp.Views
         }
 
 
+        /// <summary>
+        /// Change from maunal and auto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SwitchButton_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as AutoAlbumTrackAssociationViewModel;
@@ -204,6 +219,11 @@ namespace RecordRemoteClientApp.Views
             }
         }
 
+        /// <summary>
+        /// Merging button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnMerge_Click(object sender, RoutedEventArgs e)
         {
             if (songListBox.Tag.ToString() == "Normal")
@@ -224,6 +244,11 @@ namespace RecordRemoteClientApp.Views
             }
         }
 
+        /// <summary>
+        /// Deleting button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
@@ -231,6 +256,11 @@ namespace RecordRemoteClientApp.Views
             ((AutoAlbumTrackAssociationViewModel)DataContext).DeleteSong(san);
         }
 
+        /// <summary>
+        /// Browsing Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             _browsing = true;

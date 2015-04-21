@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace RecordRemoteClientApp.Models
 {
+    /// <summary>
+    /// For binding purposes what is displayed in the listviews for songs
+    /// </summary>
     public class Song : ViewModelBase
     {
         public Song()

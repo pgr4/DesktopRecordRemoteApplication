@@ -54,6 +54,9 @@ namespace RecordRemoteClientApp.ViewModel
             HighlightColor = Settings.Instance.HighlightColor;
         }
 
+        /// <summary>
+        /// Process for Writing and setting the current Properties to settings
+        /// </summary>
         public void Set()
         {
             List<string> setList = new List<string>();

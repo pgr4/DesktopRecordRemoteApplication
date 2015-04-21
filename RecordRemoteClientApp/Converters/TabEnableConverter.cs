@@ -8,6 +8,9 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// If Object is null returns false else true
+    /// </summary>
     public class TabEnableConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

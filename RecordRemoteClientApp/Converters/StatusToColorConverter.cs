@@ -10,6 +10,9 @@ using System.Windows.Media;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Based on the status returns a color
+    /// </summary>
     public class StatusToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

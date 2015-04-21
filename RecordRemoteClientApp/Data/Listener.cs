@@ -14,6 +14,9 @@ using System.Windows;
 
 namespace RecordRemoteClientApp.Data
 {
+    /// <summary>
+    /// Runs on own thread listens to incoming UDP messages
+    /// </summary>
     public class Listener
     {
         #region Members
@@ -69,6 +72,11 @@ namespace RecordRemoteClientApp.Data
 
         #endregion
 
+        #region Functions
+
+        /// <summary>
+        /// Main Listening Function
+        /// </summary>
         public void Listen()
         {
             SetIpAddress();
@@ -287,5 +295,7 @@ namespace RecordRemoteClientApp.Data
 
             ThisIpAddress = IPAddress.Parse(localIP);
         }
+
+        #endregion
     }
 }

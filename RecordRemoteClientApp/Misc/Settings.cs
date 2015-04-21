@@ -8,6 +8,9 @@ using System.Windows;
 
 namespace RecordRemoteClientApp.Misc
 {
+    /// <summary>
+    /// Class for storing the color settings and updating
+    /// </summary>
     public class Settings : DependencyObject
     {
         public static readonly DependencyProperty MainColorProperty = DependencyProperty.Register("MainColor", typeof(System.Windows.Media.Brush), typeof(Settings));

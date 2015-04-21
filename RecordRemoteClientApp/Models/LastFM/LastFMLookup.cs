@@ -17,6 +17,11 @@ namespace RecordRemoteClientApp.Models
         private const string StartQuery = "http://ws.audioscrobbler.com/2.0/?";
         private const string EndQuery = "&api_key=557e6ea3fad888bd915f713613941051";
 
+        /// <summary>
+        /// Method for getting Artists based on the typed in artist name
+        /// </summary>
+        /// <param name="queryString"></param>
+        /// <returns></returns>
         public static List<GenericPictureName> ArtistQuery(string queryString)
         {
             try
@@ -57,6 +62,11 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+        /// <summary>
+        /// Method for getting albums based on the artist
+        /// </summary>
+        /// <param name="queryString"></param>
+        /// <returns></returns>
         public static List<GenericPictureName> AlbumQuery(string queryString)
         {
             try
@@ -95,6 +105,14 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+        /// <summary>
+        /// Method for getting song titles based on the artist and album
+        /// If the songCount isn't reached then fillers are added
+        /// </summary>
+        /// <param name="queryArtistString"></param>
+        /// <param name="queryAlbumString"></param>
+        /// <param name="songCount"></param>
+        /// <returns></returns>
         public static List<string> AlbumInfoQuery(string queryArtistString, string queryAlbumString, int songCount)
         {
             try
@@ -132,6 +150,12 @@ namespace RecordRemoteClientApp.Models
             }
         }
 
+        /// <summary>
+        /// Unsed
+        /// </summary>
+        /// <param name="compareString"></param>
+        /// <param name="filterString"></param>
+        /// <returns></returns>
         public static bool IsAble(string compareString, string filterString)
         {
             for (int i = 0; i < filterString.Length; i++)

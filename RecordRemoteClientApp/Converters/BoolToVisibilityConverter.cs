@@ -9,6 +9,9 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Boolean to visibility
+    /// </summary>
     internal class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

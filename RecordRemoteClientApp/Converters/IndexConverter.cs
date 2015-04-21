@@ -9,6 +9,10 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Gets the song index based on place in list view 
+    /// Base 1
+    /// </summary>
     public class IndexConverter : IValueConverter
     {
         public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)

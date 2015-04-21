@@ -9,6 +9,9 @@ using System.Windows.Data;
 
 namespace RecordRemoteClientApp.Converters
 {
+    /// <summary>
+    /// Converts controls on the association screen depending on the mode that we are in
+    /// </summary>
     class AssociationConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

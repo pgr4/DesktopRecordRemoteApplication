@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace RecordRemoteClientApp.Models.LastFM
 {
+    /// <summary>
+    /// Class intended for storing albums retrieved from online database
+    /// </summary>
     public class LastFMAlbum
     {
          public LastFMAlbum()
